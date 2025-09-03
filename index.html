@@ -9,8 +9,8 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 
-  <style>
- /* ===== Baseline ===== */
+  <style> 
+/* ===== Baseline ===== */
 *{ box-sizing:border-box; }
 :root{
   --bg:#f6f7fb; --panel:#fff; --ink:#0f172a; --mut:#475569;
@@ -113,7 +113,6 @@ input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shado
 /* Más aire antes de Observaciones */
 .card > .grid-3 + .field { margin-top: 16px; }
 label[for="obs"]{ display:block; margin-bottom:6px; }
-
   </style>
 </head>
 <body>
@@ -163,20 +162,9 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
             <input id="fechaInst" name="fechaInst" type="date" required/>
           </div>
         </div>
-
-        <div class="two">
-          <div class="field">
-            <label for="horaIni">Hora inicio</label>
-            <input id="horaIni" name="horaIni" type="time"/>
-          </div>
-          <div class="field">
-            <label for="horaFin">Hora fin</label>
-            <input id="horaFin" name="horaFin" type="time"/>
-          </div>
-        </div>
       </section>
 
-      <!-- B) CÁMARAS (dinámicas con Ubicación y Conectividad adentro) -->
+      <!-- B) CÁMARAS (cada una trae: datos, ubicación, pruebas, fotos) -->
       <section class="card">
         <div class="card-title-row">
           <h2 class="card-title">B) Cámaras instaladas</h2>
@@ -185,16 +173,9 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         <div id="camList" class="stack"></div>
       </section>
 
-      <!-- C) PRUEBAS -->
+      <!-- C) OBSERVACIONES GENERALES -->
       <section class="card">
-        <h2 class="card-title">C) Pruebas y validaciones</h2>
-        <div class="grid-3">
-          <label class="check"><input type="checkbox" id="chkRtsp"/> <span>Vista en vivo</span></label>
-          <label class="check"><input type="checkbox" id="chkNotiCli"/> <span>Notificaciones en la app del cliente</span></label>
-          <label class="check"><input type="checkbox" id="chkMicroSsd"/> <span>Micro SSD grabando</span></label>
-          <label class="check"><input type="checkbox" id="chkEventos"/> <span>Eventos / movimientos</span></label>
-          <label class="check"><input type="checkbox" id="chkPanelCarga"/> <span>Carga del panel solar</span></label>
-        </div>
+        <h2 class="card-title">C) Observaciones generales</h2>
         <div class="field">
           <label for="obs">Observaciones técnicas</label>
           <textarea id="obs" name="obs" rows="5" placeholder="Cableado, fijaciones, obstáculos, recomendaciones, etc."></textarea>
@@ -202,66 +183,9 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         </div>
       </section>
 
-      <!-- D) FOTOS (solo fila etiquetada) -->
+      <!-- D) CIERRE TÉCNICO -->
       <section class="card">
-        <h2 class="card-title">D) Fotos</h2>
-
-        <div class="photo-grid">
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fPoste" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Poste"/>
-              <label for="fPoste">📷 Poste</label>
-            </div>
-            <small class="ph-caption">1) Poste</small>
-          </div>
-
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fVivo" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Vista en vivo"/>
-              <label for="fVivo">📷 Vista en vivo</label>
-            </div>
-            <small class="ph-caption">2) Vista en vivo</small>
-          </div>
-
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fCarga" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Carga del panel solar"/>
-              <label for="fCarga">📷 Carga del panel solar</label>
-            </div>
-            <small class="ph-caption">3) Carga del panel solar</small>
-          </div>
-
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fModem" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Modem"/>
-              <label for="fModem">📷 Modem</label>
-            </div>
-            <small class="ph-caption">4) Modem</small>
-          </div>
-
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fSenal" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Señal"/>
-              <label for="fSenal">📷 Señal</label>
-            </div>
-            <small class="ph-caption">5) Señal</small>
-          </div>
-
-          <div class="photo-cell">
-            <div class="u">
-              <input id="fCamPoste" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Cámara y poste"/>
-              <label for="fCamPoste">📷 Cámara y poste</label>
-            </div>
-            <small class="ph-caption">6) Cámara y poste</small>
-          </div>
-        </div>
-
-        <small class="hint">Las fotos se insertan reducidas en el PDF (con su etiqueta).</small>
-      </section>
-
-      <!-- E) CIERRE TÉCNICO -->
-      <section class="card">
-        <h2 class="card-title">E) Cierre del técnico</h2>
+        <h2 class="card-title">D) Cierre del técnico</h2>
         <div class="grid">
           <div class="field">
             <label>Firma del técnico</label>
@@ -275,12 +199,12 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
             <input id="dniTec" name="dniTec" type="text" inputmode="numeric" class="mono" placeholder="00.000.000"/>
             <div class="two" style="margin-top:10px;">
               <div class="field">
-                <label for="horasTec">Hora de inicio de la instalación</label>
-                <input id="horasTec" name="horasTec" type="number" min="0" step="1" value="0"/>
+                <label for="horaIni">Hora inicio</label>
+                <input id="horaIni" name="horaIni" type="time"/>
               </div>
               <div class="field">
-                <label for="minTec">Hora de fin de la instalación</label>
-                <input id="horasTec" name="horasTec" type="number" min="0" step="1" value="0"/>
+                <label for="horaFin">Hora fin</label>
+                <input id="horaFin" name="horaFin" type="time"/>
               </div>
             </div>
           </div>
@@ -733,5 +657,3 @@ $('#btnReset')?.addEventListener('click', ()=> msg('', ''));
   </script>
 </body>
 </html>
-
-
