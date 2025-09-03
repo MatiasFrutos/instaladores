@@ -323,7 +323,7 @@ function testsChunk(idPrefix){
   <div class="grid-3">
     <label class="check"><input type="checkbox" id="${idPrefix}_t_vivo"/> <span>Vista en vivo</span></label>
     <label class="check"><input type="checkbox" id="${idPrefix}_t_noti"/> <span>Notificaciones en la app del cliente</span></label>
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_sd"/> <span>Micro SSD grabando</span></label>
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_sd"/> <span>Micro SD grabando</span></label>
     <label class="check"><input type="checkbox" id="${idPrefix}_t_evt"/> <span>Eventos / movimientos</span></label>
     <label class="check"><input type="checkbox" id="${idPrefix}_t_panel"/> <span>Carga del panel solar</span></label>
   </div>`;
@@ -548,7 +548,7 @@ async function generarPDF(){
     const tests = [
       ['Vista en vivo', el.querySelector(`#cam_${i}_t_vivo`)?.checked ? 'Sí':'No'],
       ['Notificaciones en la app del cliente', el.querySelector(`#cam_${i}_t_noti`)?.checked ? 'Sí':'No'],
-      ['Micro SSD grabando', el.querySelector(`#cam_${i}_t_sd`)?.checked ? 'Sí':'No'],
+      ['Micro SD grabando', el.querySelector(`#cam_${i}_t_sd`)?.checked ? 'Sí':'No'],
       ['Eventos / movimientos', el.querySelector(`#cam_${i}_t_evt`)?.checked ? 'Sí':'No'],
       ['Carga del panel solar', el.querySelector(`#cam_${i}_t_panel`)?.checked ? 'Sí':'No'],
     ];
@@ -657,3 +657,4 @@ $('#btnReset')?.addEventListener('click', ()=> msg('', ''));
   </script>
 </body>
 </html>
+
