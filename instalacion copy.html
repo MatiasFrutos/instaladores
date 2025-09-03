@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Agronomía Inteligente SRL — Parte de instalación</title>
+
+  <!-- jsPDF -->
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+ /* ===== Baseline ===== */
+*{ box-sizing:border-box; }
+:root{
+  --bg:#f6f7fb; --panel:#fff; --ink:#0f172a; --mut:#475569;
+  --line:#e5e7eb; --line-weak:#eef2f7; --accent:#f59e0b; /* amarillo */
+  --ok:#10b981; --err:#ef4444; --radius:10px;
+  --shadow:0 6px 16px rgba(0,0,0,.06);
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+html,body{ background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.25; }
+.wrap{ max-width:1080px; margin:14px auto 28px; padding:0 12px; }
+
+/* ===== Masthead con línea amarilla y borde negro ===== */
+.masthead{ position:relative; border-bottom:1px solid #111; }
+.masthead::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px;
+  background:linear-gradient(90deg,var(--accent),rgba(245,158,11,0)); }
+.mast-inner{ display:flex; align-items:center; gap:12px; padding:8px 0; }
+#logoImg{ max-height:56px; width:auto; }
+.brand{ margin:0; font-size:1.35rem; }
+.subtitle{ margin:2px 0 0; color:var(--mut); }
+
+/* ===== Cards ===== */
+.card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  padding:12px; box-shadow:var(--shadow); margin-bottom:12px; }
+.card-title{ margin:0 0 8px; font-size:1.02rem; font-weight:700; }
+.card-title-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 4px; margin-bottom:14px; }
+
+/* ===== Grids seguras ===== */
+.grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.two{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.grid-3{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+@media (max-width:980px){ .grid-3{ grid-template-columns: 1fr 1fr; } }
+@media (max-width:720px){ .grid, .two, .grid-3{ grid-template-columns:1fr; } }
+.stack{ display:grid; gap:12px; }
+
+/* ===== Campos ===== */
+.field{ display:flex; flex-direction:column; gap:10px; min-width:0; }
+label{ font-size:.92rem; color:var(--mut); }
+.req{ color:var(--err); }
+input[type="text"], input[type="tel"], input[type="date"], input[type="time"],
+input[type="number"], select, textarea{
+  width:100%; min-height:36px; font-size:.94rem;
+  padding:10px 12px; color:var(--ink); background:#fff;
+  border:1px solid var(--line); border-radius:8px; outline:none;
+  transition:border-color .12s ease, box-shadow .12s ease;
+}
+textarea{ min-height:128px; padding-top:16px; padding-bottom:16px; }
+input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(245,158,11,.18); }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+
+/* ===== Fotos de cada cámara ===== */
+.photo-grid{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-top:6px;
+}
+.u{ position:relative; }
+.u input.foto-labeled{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+.u label{
+  display:flex; align-items:center; justify-content:center; gap:8px; min-height:58px;
+  border:1px dashed var(--line); border-radius:10px; background:#fff; font-weight:600; cursor:pointer;
+}
+.u label:hover{ border-color:var(--accent); box-shadow:var(--shadow); }
+.photo-cell{ display:flex; flex-direction:column; gap:6px; }
+.ph-caption{ color:var(--mut); font-size:.85rem; }
+
+/* ===== Firma ===== */
+.sig-pad{ border:2px dashed var(--line-weak); border-radius:10px; padding:8px; background:#fff; }
+.sig-pad canvas{
+  width:100%; height:180px;
+  background:#fff; border:1.5px solid var(--line-weak); border-radius:8px;
+  touch-action: none; /* necesario para touch */
+}
+
+/* ===== Botones / mensajes ===== */
+.actions{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:8px 11px; border-radius:10px; border:1px solid var(--line);
+  background:#fff; color:#111827; cursor:pointer; font-weight:600; font-size:.92rem; }
+.btn.primary{ background:linear-gradient(180deg, rgba(245,158,11,.94), rgba(245,158,11,.86)); border-color:#f5b219; }
+.btn.ghost{ background:#fff; border-style:dashed; }
+.btn.small{ padding:7px 12px; font-size:.9rem; }
+
+#formMsg{ font-size:.9rem; padding:8px 10px; border-radius:8px; }
+#formMsg.ok{ color:#065f46; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.35); }
+#formMsg.err{ color:#991b1b; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); }
+
+.counter{ margin-top:4px; font-size:.86rem; color:var(--mut); text-align:right; }
+.site-foot{ margin:18px auto 24px; text-align:center; color:var(--mut); font-size:.9rem; }
+
+/* ===== Tarjeta de cámara ===== */
+.cam-card{ border:1px solid var(--line); border-radius:10px; padding:12px; background:#fff; }
+.cam-head{ display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.cam-title{ margin:0; font-weight:700; font-size:1.02rem; }
+.cam-remove{ border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#fff; }
+
+.cam-card .subttl{ margin:10px 0 6px; font-weight:700; color:#111; }
+
+/* Aire extra entre bloques de la cámara */
+.cam-card .block{ border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; }
+.cam-card .actions{ margin-top:12px; padding-top:8px; border-top:1px dashed var(--line); }
+
+/* Más aire antes de Observaciones */
+.card > .grid-3 + .field { margin-top: 16px; }
+label[for="obs"]{ display:block; margin-bottom:6px; }
+
+  </style>
+</head>
+<body>
+  <!-- Encabezado -->
+  <header class="masthead">
+    <div class="mast-inner">
+      <img src="./logo.png" alt="Logo" id="logoImg"/>
+      <div class="titles">
+        <h1 class="brand">Agronomía Inteligente SRL</h1>
+        <p class="subtitle">Parte de instalación (técnico)</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form id="formInstalacion" novalidate>
+
+      <!-- A) DATOS DEL SERVICIO -->
+      <section class="card">
+        <h2 class="card-title">A) Datos del servicio</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="cliNombre">Cliente / Razón social <span class="req">*</span></label>
+            <input id="cliNombre" name="cliNombre" type="text" required/>
+          </div>
+          <div class="field">
+            <label for="cliTel">Teléfono / WhatsApp <span class="req">*</span></label>
+            <input id="cliTel" name="cliTel" type="tel" required placeholder="+54 9 ..."/>
+          </div>
+          <div class="field">
+            <label for="cliDireccion">Dirección</label>
+            <input id="cliDireccion" name="cliDireccion" type="text"/>
+          </div>
+          <div class="field">
+            <label for="cliCiudad">Ciudad / Provincia</label>
+            <input id="cliCiudad" name="cliCiudad" type="text"/>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="tecNombre">Técnico a cargo <span class="req">*</span></label>
+            <input id="tecNombre" name="tecNombre" type="text" required/>
+          </div>
+          <div class="field">
+            <label for="fechaInst">Fecha <span class="req">*</span></label>
+            <input id="fechaInst" name="fechaInst" type="date" required/>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="horaIni">Hora inicio</label>
+            <input id="horaIni" name="horaIni" type="time"/>
+          </div>
+          <div class="field">
+            <label for="horaFin">Hora fin</label>
+            <input id="horaFin" name="horaFin" type="time"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- B) CÁMARAS (dinámicas con Ubicación y Conectividad adentro) -->
+      <section class="card">
+        <div class="card-title-row">
+          <h2 class="card-title">B) Cámaras instaladas</h2>
+          <button class="btn small" type="button" id="btnAddCam">+ Agregar cámara</button>
+        </div>
+        <div id="camList" class="stack"></div>
+      </section>
+
+      <!-- C) PRUEBAS -->
+      <section class="card">
+        <h2 class="card-title">C) Pruebas y validaciones</h2>
+        <div class="grid-3">
+          <label class="check"><input type="checkbox" id="chkRtsp"/> <span>Vista en vivo</span></label>
+          <label class="check"><input type="checkbox" id="chkNotiCli"/> <span>Notificaciones en la app del cliente</span></label>
+          <label class="check"><input type="checkbox" id="chkMicroSsd"/> <span>Micro SSD grabando</span></label>
+          <label class="check"><input type="checkbox" id="chkEventos"/> <span>Eventos / movimientos</span></label>
+          <label class="check"><input type="checkbox" id="chkPanelCarga"/> <span>Carga del panel solar</span></label>
+        </div>
+        <div class="field">
+          <label for="obs">Observaciones técnicas</label>
+          <textarea id="obs" name="obs" rows="5" placeholder="Cableado, fijaciones, obstáculos, recomendaciones, etc."></textarea>
+          <div class="counter" id="countObs">0/800</div>
+        </div>
+      </section>
+
+      <!-- D) FOTOS (solo fila etiquetada) -->
+      <section class="card">
+        <h2 class="card-title">D) Fotos</h2>
+
+        <div class="photo-grid">
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fPoste" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Poste"/>
+              <label for="fPoste">📷 Poste</label>
+            </div>
+            <small class="ph-caption">1) Poste</small>
+          </div>
+
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fVivo" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Vista en vivo"/>
+              <label for="fVivo">📷 Vista en vivo</label>
+            </div>
+            <small class="ph-caption">2) Vista en vivo</small>
+          </div>
+
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fCarga" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Carga del panel solar"/>
+              <label for="fCarga">📷 Carga del panel solar</label>
+            </div>
+            <small class="ph-caption">3) Carga del panel solar</small>
+          </div>
+
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fModem" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Modem"/>
+              <label for="fModem">📷 Modem</label>
+            </div>
+            <small class="ph-caption">4) Modem</small>
+          </div>
+
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fSenal" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Señal"/>
+              <label for="fSenal">📷 Señal</label>
+            </div>
+            <small class="ph-caption">5) Señal</small>
+          </div>
+
+          <div class="photo-cell">
+            <div class="u">
+              <input id="fCamPoste" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="Cámara y poste"/>
+              <label for="fCamPoste">📷 Cámara y poste</label>
+            </div>
+            <small class="ph-caption">6) Cámara y poste</small>
+          </div>
+        </div>
+
+        <small class="hint">Las fotos se insertan reducidas en el PDF (con su etiqueta).</small>
+      </section>
+
+      <!-- E) CIERRE TÉCNICO -->
+      <section class="card">
+        <h2 class="card-title">E) Cierre del técnico</h2>
+        <div class="grid">
+          <div class="field">
+            <label>Firma del técnico</label>
+            <div class="sig-pad"><canvas id="canvasFirm"></canvas></div>
+            <div class="actions" style="margin-top:6px;">
+              <button class="btn ghost" type="button" id="btnClearFirm">Limpiar firma</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="dniTec">DNI</label>
+            <input id="dniTec" name="dniTec" type="text" inputmode="numeric" class="mono" placeholder="00.000.000"/>
+            <div class="two" style="margin-top:10px;">
+              <div class="field">
+                <label for="horasTec">Horas</label>
+                <input id="horasTec" name="horasTec" type="number" min="0" step="1" value="0"/>
+              </div>
+              <div class="field">
+                <label for="minTec">Minutos</label>
+                <input id="minTec" name="minTec" type="number" min="0" max="59" step="1" value="0"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Acciones -->
+      <div class="actions">
+        <button class="btn primary" type="button" id="btnEnviar">Enviar formulario</button>
+        <button class="btn ghost" type="reset" id="btnReset">Limpiar</button>
+        <div id="formMsg" role="status" aria-live="polite"></div>
+      </div>
+
+    </form>
+  </main>
+
+  <footer class="site-foot">© <span id="year"></span> — Agronomía Inteligente SRL</footer>
+
+  <script>
+    // ===== Helpers
+const $ = (s, c=document)=>c.querySelector(s);
+const $$ = (s, c=document)=>[...c.querySelectorAll(s)];
+
+// Año
+$('#year').textContent = new Date().getFullYear();
+
+// Fallback del logo
+$('#logoImg')?.addEventListener('error', ()=>{
+  const svg = 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="70"><rect width="100%" height="100%" fill="#fff"/><text x="50%" y="54%" text-anchor="middle" font-family="Helvetica, Arial" font-size="18" fill="#111827">Agronomía Inteligente SRL</text></svg>`);
+  $('#logoImg').src = svg;
+});
+
+// Fecha por defecto hoy
+(()=>{ const i=$('#fechaInst'); if(!i) return; const tz=(new Date()).getTimezoneOffset()*60000; i.value=new Date(Date.now()-tz).toISOString().slice(0,10); })();
+
+// Contador Observaciones
+(()=>{ const ta=$('#obs'), out=$('#countObs'); if(!ta||!out) return; const MAX=800;
+  const upd=()=>{ const n=Math.min(ta.value.length,MAX); out.textContent=`${n}/${MAX}`; if(ta.value.length>MAX) ta.value=ta.value.slice(0,MAX); };
+  ta.addEventListener('input',upd); upd();
+})();
+
+// ===== Firma (Pointer Events, móvil/desktop)
+(()=> {
+  const canvas=$('#canvasFirm'); if(!canvas) return;
+  const ctx=canvas.getContext('2d', { willReadFrequently:true });
+  let drawing=false;
+
+  function resize(){
+    const dpr=window.devicePixelRatio||1;
+    const w=canvas.clientWidth, h=canvas.clientHeight;
+    canvas.width=Math.max(600, Math.floor(w*dpr));
+    canvas.height=Math.floor(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827';
+  }
+  resize(); addEventListener('resize', resize);
+
+  const pos=e=>{ const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+  const down=e=>{ drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); };
+  const move=e=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
+  const up=()=>{ drawing=false; };
+
+  canvas.addEventListener('pointerdown',down);
+  canvas.addEventListener('pointermove',move);
+  addEventListener('pointerup',up);
+  addEventListener('pointercancel',up);
+
+  $('#btnClearFirm')?.addEventListener('click', ()=> ctx.clearRect(0,0,canvas.width,canvas.height));
+})();
+
+// ===== Util: dec -> GMS
+function toDMS(dec, isLat=true){
+  const dir = dec>=0 ? (isLat?'N':'E') : (isLat?'S':'W');
+  const abs = Math.abs(dec);
+  const d = Math.floor(abs);
+  const mFloat = (abs - d) * 60;
+  const m = Math.floor(mFloat);
+  const s = ((mFloat - m) * 60).toFixed(1);
+  return `${d}°${m}′${s}″ ${dir}`;
+}
+
+// ===== Cámaras dinámicas =====
+const camList = $('#camList');
+const modelos = [
+  'HIKVISION DOMO PRO SOLAR',
+  'HIKVISION DOMO COLORVU SOLAR',
+  'HIKVISION FIJA SOLAR',
+  'HIKVISION FIJA HOGAREÑA'
+];
+let camIndex = 0;
+
+function photoChunk(idPrefix){
+  return `
+  <div class="photo-grid">
+    ${[
+      ['Poste','Poste'],
+      ['Vivo','Vista en vivo'],
+      ['Carga','Carga del panel solar'],
+      ['Modem','Modem'],
+      ['Senal','Señal'],
+      ['CamPoste','Cámara y poste']
+    ].map(([k,txt])=>`
+      <div class="photo-cell">
+        <div class="u">
+          <input id="${idPrefix}_${k}" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="${txt}"/>
+          <label for="${idPrefix}_${k}">📷 ${txt}</label>
+        </div>
+        <small class="ph-caption">${txt}</small>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function testsChunk(idPrefix){
+  return `
+  <div class="grid-3">
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_vivo"/> <span>Vista en vivo</span></label>
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_noti"/> <span>Notificaciones en la app del cliente</span></label>
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_sd"/> <span>Micro SSD grabando</span></label>
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_evt"/> <span>Eventos / movimientos</span></label>
+    <label class="check"><input type="checkbox" id="${idPrefix}_t_panel"/> <span>Carga del panel solar</span></label>
+  </div>`;
+}
+
+function camCard(index){
+  const id = `cam_${index}`;
+  const el = document.createElement('div');
+  el.className = 'cam-card';
+  el.dataset.cam = id;
+  el.innerHTML = `
+    <div class="cam-head">
+      <h3 class="cam-title">Cámara #${index+1}</h3>
+      <button class="cam-remove" type="button">Eliminar</button>
+    </div>
+
+    <!-- Datos básicos -->
+    <div class="grid">
+      <div class="field">
+        <label>Modelo</label>
+        <select name="${id}_modelo">
+          ${modelos.map(m=>`<option>${m}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>N° de serie</label>
+        <input type="text" name="${id}_serie" class="mono"/>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="field">
+        <label>Soporte (torre / poste / columna)</label>
+        <select name="${id}_soporte">
+          <option value="">— Elegí —</option>
+          <option>Torre</option><option>Poste</option><option>Columna</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo de conexión</label>
+        <select name="${id}_conexion">
+          <option value="">— Elegí —</option>
+          <option>Solar</option><option>220 V</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Marca y modelo del módem</label>
+        <input type="text" name="${id}_modem" placeholder="p.ej. Huawei B311…"/>
+      </div>
+    </div>
+
+    <!-- Ubicación y conectividad -->
+    <div class="block">
+      <div class="subttl">Ubicación y conectividad</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Operador SIM</label>
+          <select name="${id}_operador">
+            <option value="">— Elegí —</option><option>Movistar</option><option>Claro</option><option>Personal</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>APN configurado</label>
+          <select name="${id}_apn">
+            <option value="">— Elegí —</option>
+            <option>Movistar: internet.gprs.unifon.com.ar</option>
+            <option>Claro: igprs.claro.com.ar</option>
+            <option>Personal: gprs.personal.com</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Señal (dBm)</label>
+          <input type="text" name="${id}_rssi" placeholder="-75 / -100"/>
+        </div>
+        <div class="field">
+          <label>Velocidad (Mbps up/down)</label>
+          <input type="text" name="${id}_vel" placeholder="ej: 8 / 3"/>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Latitud (GMS)</label>
+          <input type="text" name="${id}_latGms" placeholder='ej: 38°24′51.8″ S'/>
+        </div>
+        <div class="field">
+          <label>Longitud (GMS)</label>
+          <input type="text" name="${id}_lonGms" placeholder='ej: 61°06′30.2″ W'/>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" data-act="geo">Usar mi ubicación</button>
+      </div>
+    </div>
+
+    <!-- Pruebas por cámara -->
+    <div class="block">
+      <div class="subttl">Pruebas y validaciones</div>
+      ${testsChunk(id)}
+    </div>
+
+    <!-- Fotos por cámara -->
+    <div class="block">
+      <div class="subttl">Fotos</div>
+      ${photoChunk(id)}
+    </div>
+  `;
+
+  // Eliminar
+  el.querySelector('.cam-remove').addEventListener('click', ()=>{ el.remove(); renumCams(); });
+
+  // Geolocalización robusta (móvil/desktop)
+  el.querySelector('[data-act="geo"]').addEventListener('click', async ()=>{
+    const opts = { enableHighAccuracy:true, timeout:15000, maximumAge:0 };
+    const apply = ({coords})=>{
+      el.querySelector(`[name="${id}_latGms"]`).value = toDMS(coords.latitude,true);
+      el.querySelector(`[name="${id}_lonGms"]`).value = toDMS(coords.longitude,false);
+      msg('ok','Ubicación aplicada a la cámara.');
+    };
+    try {
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const st = await navigator.permissions.query({name:'geolocation'});
+          if (st.state === 'denied') { msg('err','Permiso de ubicación denegado. Activalo en el navegador.'); return; }
+        } catch {}
+      }
+      if (!('geolocation' in navigator)) { msg('err','Geolocalización no disponible en este dispositivo.'); return; }
+      navigator.geolocation.getCurrentPosition(apply, (err)=>{
+        msg('err', 'No se pudo obtener la ubicación ('+err.code+'). Verificá permisos/HTTPS.');
+      }, opts);
+    } catch {
+      msg('err','No se pudo obtener la ubicación.');
+    }
+  });
+
+  return el;
+}
+function renumCams(){ $$('.cam-card', camList).forEach((el,i)=> el.querySelector('.cam-title').textContent = `Cámara #${i+1}`); }
+function addCam(){ camList.appendChild(camCard(camIndex++)); }
+$('#btnAddCam')?.addEventListener('click', addCam);
+// una cámara por defecto
+addCam();
+
+// ===== Mensajes UI
+const formMsg=$('#formMsg');
+function msg(kind, text){ formMsg.className = kind; formMsg.textContent = text; }
+
+// ===== Imagen helper
+function readImageAsDataURL(file, maxW=600, quality=.85){
+  return new Promise(resolve=>{
+    if(!file) return resolve(null);
+    const img=new Image(), fr=new FileReader();
+    fr.onload=()=> img.src=fr.result;
+    img.onload=()=>{
+      const scale=Math.min(1,maxW/img.width);
+      const c=document.createElement('canvas'); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      resolve(c.toDataURL('image/jpeg',quality));
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+// ===== PDF =====
+async function generarPDF(){
+  const { jsPDF } = window.jspdf || {}; if(!jsPDF) throw new Error('jsPDF no cargado');
+  const doc = new jsPDF({ unit:'pt', format:'a4' });
+  const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
+  const M=56; let y=M;
+
+  // Encabezado
+  doc.setFont('helvetica','bold'); doc.setFontSize(15);
+  doc.text('Agronomía Inteligente SRL — Parte de instalación', M, y); y+=22;
+  doc.setDrawColor(245,158,11); doc.setLineWidth(2); doc.line(M,y,pageW-M,y); y+=16;
+
+  // Datos del servicio
+  const A = [
+    ['Cliente', $('#cliNombre').value||''], ['Teléfono', $('#cliTel').value||''],
+    ['Dirección', $('#cliDireccion').value||''], ['Ciudad/Prov.', $('#cliCiudad').value||''],
+    ['Técnico', $('#tecNombre').value||''], ['Fecha', $('#fechaInst').value||'']
+  ];
+  doc.autoTable({ startY:y, head:[['Campo','Valor']], body:A, theme:'grid',
+    styles:{ fontSize:9.5, cellPadding:5 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
+  y = doc.lastAutoTable.finalY + 14;
+
+  // Cada cámara (datos + pruebas + fotos) con marco
+  for (const [i,el] of $$('.cam-card', camList).entries()) {
+    if(y>pageH-280){ doc.addPage(); y=M; }
+
+    // bloque start con acolchado superior para que NO toque el título
+    const blockX = M-6, blockW = pageW - 2*M + 12;
+    const blockTopPadding = 18;
+    let y0 = y + blockTopPadding;
+
+    // Título
+    doc.setFont('helvetica','bold'); doc.setFontSize(12);
+    doc.text(`Cámara #${i+1}`, M, y0); 
+    y0 += 12;
+
+    // Tabla datos
+    const body = [
+      ['Modelo', el.querySelector('select').value],
+      ['Serie', el.querySelector('[name$="_serie"]').value],
+      ['Soporte', el.querySelector('[name$="_soporte"]').value],
+      ['Tipo de conexión', el.querySelector('[name$="_conexion"]').value],
+      ['Módem (marca/modelo)', el.querySelector('[name$="_modem"]').value],
+      ['Operador/APN', `${el.querySelector('[name$="_operador"]').value} / ${el.querySelector('[name$="_apn"]').value}`],
+      ['Señal (dBm)', el.querySelector('[name$="_rssi"]').value],
+      ['Velocidad', el.querySelector('[name$="_vel"]').value],
+      ['Lat/Lon (GMS)', `${el.querySelector('[name$="_latGms"]').value} , ${el.querySelector('[name$="_lonGms"]').value}`]
+    ];
+    doc.autoTable({
+      startY: y0,
+      body, theme:'plain',
+      styles:{ fontSize:10, cellPadding:3 },
+      margin:{ left:M, right:M }
+    });
+    y0 = doc.lastAutoTable.finalY + 8;
+
+    // Pruebas por cámara
+    const tests = [
+      ['Vista en vivo', el.querySelector(`#cam_${i}_t_vivo`)?.checked ? 'Sí':'No'],
+      ['Notificaciones en la app del cliente', el.querySelector(`#cam_${i}_t_noti`)?.checked ? 'Sí':'No'],
+      ['Micro SSD grabando', el.querySelector(`#cam_${i}_t_sd`)?.checked ? 'Sí':'No'],
+      ['Eventos / movimientos', el.querySelector(`#cam_${i}_t_evt`)?.checked ? 'Sí':'No'],
+      ['Carga del panel solar', el.querySelector(`#cam_${i}_t_panel`)?.checked ? 'Sí':'No'],
+    ];
+    doc.autoTable({
+      startY:y0,
+      head:[['Prueba','OK']], body:tests, theme:'grid',
+      styles:{ fontSize:10, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] },
+      margin:{ left:M, right:M }
+    });
+    y0 = doc.lastAutoTable.finalY + 10;
+
+    // Fotos de la cámara
+    const fileIds = ['Poste','Vivo','Carga','Modem','Senal','CamPoste'].map(s=>`#cam_${i}_${s}`);
+    const items=[];
+    for(const sel of fileIds){
+      const inp = el.querySelector(sel);
+      const f = inp?.files?.[0];
+      if(!f) continue;
+      const data = await readImageAsDataURL(f, 420, .82);
+      items.push({data, caption: inp.dataset.caption});
+    }
+    if(items.length){
+      doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.text('Fotos', M, y0); y0 += 6;
+
+      const size=110, gap=10; let x=M, rowH=size+22;
+      for(const it of items){
+        if(x+size>pageW-M){ x=M; y0+=rowH; }
+        if(y0+size+18>pageH-M){ 
+          // cerrar marco antes de pasar de página
+          const blockY = y + 2;
+          const blockH = (y0 - y) + 10;
+          doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
+          doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
+          doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
+          doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
+
+          doc.addPage(); y = M; y0 = y + blockTopPadding;
+          doc.setFont('helvetica','bold'); doc.setFontSize(12);
+          doc.text(`Cámara #${i+1} (cont.)`, M, y0); y0 += 12;
+          doc.setFont('helvetica','bold'); doc.setFontSize(11);
+          doc.text('Fotos (cont.)', M, y0); y0 += 6;
+          x = M;
+        }
+        doc.addImage(it.data, 'JPEG', x, y0, size, size);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        doc.text(doc.splitTextToSize(it.caption, size), x, y0+size+12);
+        x+=size+gap;
+      }
+      y0 += rowH;
+    }
+
+    // Dibujar el marco del bloque de la cámara
+    const blockY = y + 2;
+    const blockH = (y0 - y) + 8;
+    doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
+    doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
+    doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
+    doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
+
+    y = blockY + blockH + 12; // aire entre cámaras
+  }
+
+  // Observaciones generales
+  if (y>pageH-160){ doc.addPage(); y=M; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text('Observaciones generales', M, y); y+=12;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text(doc.splitTextToSize($('#obs').value||'—', pageW-2*M), M, y);
+  y += 54;
+
+  // Cierre técnico
+  if (y>pageH-160){ doc.addPage(); y=M; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text('Cierre del técnico', M, y); y+=10;
+
+  const sig = $('#canvasFirm'); const dni = $('#dniTec').value||'';
+  const hIni = $('#horaIni').value||''; const hFin = $('#horaFin').value||'';
+  if(sig){
+    const data = sig.toDataURL('image/png');
+    doc.addImage(data,'PNG',M,y,220,110);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text(`DNI: ${dni}`, M+240, y+24);
+    doc.text(`Hora inicio: ${hIni}`, M+240, y+44);
+    doc.text(`Hora fin: ${hFin}`, M+240, y+64);
+    y += 120;
+  }
+
+  // Footer
+  doc.setDrawColor(229,231,235); doc.line(M, pageH-48, pageW-M, pageH-48);
+  doc.setFontSize(9.5); doc.text(`Generado — ${new Date().toLocaleString()}`, M, pageH - 34);
+
+  const fname = `parte-instalacion-${$('#fechaInst').value || new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(fname);
+}
+
+// ===== Acciones
+$('#btnEnviar')?.addEventListener('click', async ()=>{
+  const form = $('#formInstalacion');
+  if (!form.checkValidity()){ form.reportValidity(); return msg('err','Completá los campos requeridos.'); }
+  try{ await generarPDF(); msg('ok','Formulario exportado como PDF.'); }
+  catch(e){ console.error(e); msg('err','No se pudo generar el PDF.'); }
+});
+$('#btnReset')?.addEventListener('click', ()=> msg('', ''));
+
+  </script>
+</body>
+</html>
