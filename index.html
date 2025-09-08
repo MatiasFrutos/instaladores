@@ -9,8 +9,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 
-  <style> 
-/* ===== Baseline ===== */
+  <style>
+
+    /* ===== Baseline ===== */
 *{ box-sizing:border-box; }
 :root{
   --bg:#f6f7fb; --panel:#fff; --ink:#0f172a; --mut:#475569;
@@ -22,7 +23,7 @@
 html,body{ background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.25; }
 .wrap{ max-width:1080px; margin:14px auto 28px; padding:0 12px; }
 
-/* ===== Masthead con línea amarilla y borde negro ===== */
+/* ===== Masthead ===== */
 .masthead{ position:relative; border-bottom:1px solid #111; }
 .masthead::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px;
   background:linear-gradient(90deg,var(--accent),rgba(245,158,11,0)); }
@@ -37,7 +38,7 @@ html,body{ background:var(--bg); color:var(--ink); font-family:var(--font); line
 .card-title{ margin:0 0 8px; font-size:1.02rem; font-weight:700; }
 .card-title-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 4px; margin-bottom:14px; }
 
-/* ===== Grids seguras ===== */
+/* ===== Grids ===== */
 .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
 .two{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
 .grid-3{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
@@ -60,6 +61,26 @@ textarea{ min-height:128px; padding-top:16px; padding-bottom:16px; }
 input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(245,158,11,.18); }
 .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 
+/* ===== Checks ===== */
+.check{ display:inline-flex; align-items:center; gap:8px; color:#111; font-size:.94rem; }
+.check input{ width:16px; height:16px; }
+.checkgrid{ margin-top:6px; }
+.checkrow{ display:flex; flex-wrap:wrap; gap:12px; }
+
+/* ===== Subtítulos de bloque ===== */
+.subttl{ margin:8px 0 6px; font-weight:700; color:#111; }
+
+/* ===== Cajas especiales ===== */
+.tools-box, .quality, .confirm-box{
+  border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; margin-top:10px;
+}
+
+/* ===== Etiqueta "No aplica" ===== */
+.label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.label-row .na{ display:inline-flex; align-items:center; gap:6px; color:#991b1b; font-size:.88rem; font-weight:600; }
+.na input{ width:16px; height:16px; }
+.na-disabled{ background:#f9fafb; color:#6b7280; }
+
 /* ===== Fotos de cada cámara ===== */
 .photo-grid{
   display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-top:6px;
@@ -79,7 +100,7 @@ input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shado
 .sig-pad canvas{
   width:100%; height:180px;
   background:#fff; border:1.5px solid var(--line-weak); border-radius:8px;
-  touch-action: none; /* necesario para touch */
+  touch-action: none;
 }
 
 /* ===== Botones / mensajes ===== */
@@ -105,14 +126,22 @@ input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shado
 .cam-remove{ border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#fff; }
 
 .cam-card .subttl{ margin:10px 0 6px; font-weight:700; color:#111; }
-
-/* Aire extra entre bloques de la cámara */
 .cam-card .block{ border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; }
 .cam-card .actions{ margin-top:12px; padding-top:8px; border-top:1px dashed var(--line); }
 
-/* Más aire antes de Observaciones */
+/* ===== Alerta roja ===== */
+.alert{
+  border-radius:12px; padding:12px; background:#fff; margin:12px 0; border:2px solid transparent;
+}
+.alert.red{ border-color:#dc2626; box-shadow:0 0 0 3px rgba(220,38,38,.08) inset; }
+.alert-title{ font-weight:800; color:#b91c1c; margin-bottom:6px; }
+.alert.red ul{ margin:6px 0 0 18px; }
+.alert.red li{ margin:6px 0; line-height:1.35; }
+
+/* Ajustes menores */
 .card > .grid-3 + .field { margin-top: 16px; }
 label[for="obs"]{ display:block; margin-bottom:6px; }
+
   </style>
 </head>
 <body>
@@ -130,7 +159,7 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
   <main class="wrap">
     <form id="formInstalacion" novalidate>
 
-      <!-- A) DATOS DEL SERVICIO -->
+      <!-- A) DATOS DEL SERVICIO (arriba siempre) -->
       <section class="card">
         <h2 class="card-title">A) Datos del servicio</h2>
         <div class="grid">
@@ -164,7 +193,7 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         </div>
       </section>
 
-      <!-- B) CÁMARAS (cada una trae: datos, ubicación, pruebas, fotos) -->
+      <!-- B) CÁMARAS -->
       <section class="card">
         <div class="card-title-row">
           <h2 class="card-title">B) Cámaras instaladas</h2>
@@ -173,14 +202,32 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         <div id="camList" class="stack"></div>
       </section>
 
-      <!-- C) OBSERVACIONES GENERALES -->
+      <!-- C) OBSERVACIONES GENERALES + CALIDAD/SEGURIDAD -->
       <section class="card">
-        <h2 class="card-title">C) Observaciones generales</h2>
+        <h2 class="card-title">C) Observaciones y calidad</h2>
         <div class="field">
           <label for="obs">Observaciones técnicas</label>
           <textarea id="obs" name="obs" rows="5" placeholder="Cableado, fijaciones, obstáculos, recomendaciones, etc."></textarea>
           <div class="counter" id="countObs">0/800</div>
         </div>
+
+        <div class="quality">
+          <div class="subttl">Calidad y seguridad</div>
+          <div class="checkrow">
+            <label class="check"><input type="checkbox" id="okCableado"/> <span>Conexiones y cableado verificados</span></label>
+            <label class="check"><input type="checkbox" id="okMontura"/> <span>Montura verificada</span></label>
+            <label class="check"><input type="checkbox" id="okCotorra"/> <span>Protección contra cotorras colocada (si aplica)</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- AVISO IMPORTANTE (rojo) AL FINAL -->
+      <section class="alert red" id="alertPagoGarantia" role="note" aria-live="polite">
+        <div class="alert-title">Importante — Condiciones comerciales y garantía</div>
+        <ul>
+          <li>El saldo restante (50%) se abonará dentro de las <strong>72 horas</strong> posteriores a la entrega del <strong>formulario de instalación completo</strong>, con fotografías y la confirmación de visibilidad remota por parte de oficina.</li>
+          <li>El instalador otorga a <strong>Agronomía Inteligente SRL</strong> una <strong>garantía de 30 (treinta) días</strong> sobre la instalación y mano de obra, contados desde la puesta en servicio.</li>
+        </ul>
       </section>
 
       <!-- D) CIERRE TÉCNICO -->
@@ -205,6 +252,21 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
               <div class="field">
                 <label for="horaFin">Hora fin</label>
                 <input id="horaFin" name="horaFin" type="time"/>
+              </div>
+            </div>
+
+            <div class="confirm-box">
+              <div class="subttl">Confirmación de oficina (obligatoria)</div>
+              <label class="check"><input type="checkbox" id="confOficina"/> <span>Oficina confirmó visibilidad remota</span></label>
+              <div class="two" style="margin-top:8px;">
+                <div class="field">
+                  <label for="horaConf">Hora de confirmación</label>
+                  <input id="horaConf" name="horaConf" type="time"/>
+                </div>
+                <div class="field">
+                  <label for="validador">Nombre quien valida</label>
+                  <input id="validador" name="validador" type="text" placeholder="Nombre en oficina"/>
+                </div>
               </div>
             </div>
           </div>
@@ -238,11 +300,20 @@ $('#logoImg')?.addEventListener('error', ()=>{
 });
 
 // Fecha por defecto hoy
-(()=>{ const i=$('#fechaInst'); if(!i) return; const tz=(new Date()).getTimezoneOffset()*60000; i.value=new Date(Date.now()-tz).toISOString().slice(0,10); })();
+(()=>{
+  const i=$('#fechaInst'); if(!i) return;
+  const tz=(new Date()).getTimezoneOffset()*60000;
+  i.value=new Date(Date.now()-tz).toISOString().slice(0,10);
+})();
 
 // Contador Observaciones
-(()=>{ const ta=$('#obs'), out=$('#countObs'); if(!ta||!out) return; const MAX=800;
-  const upd=()=>{ const n=Math.min(ta.value.length,MAX); out.textContent=`${n}/${MAX}`; if(ta.value.length>MAX) ta.value=ta.value.slice(0,MAX); };
+(()=>{
+  const ta=$('#obs'), out=$('#countObs'); if(!ta||!out) return; const MAX=800;
+  const upd=()=>{
+    const n=Math.min(ta.value.length,MAX);
+    out.textContent=`${n}/${MAX}`;
+    if(ta.value.length>MAX) ta.value=ta.value.slice(0,MAX);
+  };
   ta.addEventListener('input',upd); upd();
 })();
 
@@ -296,17 +367,51 @@ const modelos = [
 ];
 let camIndex = 0;
 
+function planChunk(idPrefix){
+  return `
+  <div class="block">
+    <div class="subttl">A0) Parámetros técnicos</div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="${idPrefix}_tipo">Tipo de trabajo <span class="req">*</span></label>
+        <select id="${idPrefix}_tipo" name="${idPrefix}_tipo" required>
+          <option value="">— Elegí —</option>
+          <option value="A1">A1 — Instalación cámaras nuevas</option>
+          <option value="A2">A2 — Instalación cámaras viejas</option>
+          <option value="A3">A3 — Soporte cámaras nuevas</option>
+          <option value="A4">A4 — Soporte cámaras viejas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="${idPrefix}_estructura">Estructura</label>
+        <select id="${idPrefix}_estructura" name="${idPrefix}_estructura">
+          <option value="">— Elegí —</option>
+          <option>Torre</option><option>Poste</option><option>Columna</option><option>Techo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3 checkgrid">
+      <label class="check"><input type="checkbox" id="${idPrefix}_chkUbic"/> <span>Ubicación confirmada</span></label>
+      <label class="check"><input type="checkbox" id="${idPrefix}_chkSat"/> <span>Revisión con imagen satelital</span></label>
+      <label class="check"><input type="checkbox" id="${idPrefix}_chkHerr"/> <span>Herramientas básicas presentes</span></label>
+    </div>
+  </div>`;
+}
+
 function photoChunk(idPrefix){
+  const items = [
+    ['Poste','Poste'],
+    ['Vivo','Vista en vivo desde PC/celular'],
+    ['Carga','Carga del panel solar'],
+    ['Fij','Cámara instalada en poste — fijaciones (vista posterior)'],
+    ['Senal','Nivel de señal'],
+    ['CamPoste','Cámara y poste — vista completa']
+  ];
   return `
   <div class="photo-grid">
-    ${[
-      ['Poste','Poste'],
-      ['Vivo','Vista en vivo'],
-      ['Carga','Carga del panel solar'],
-      ['Modem','Modem'],
-      ['Senal','Señal'],
-      ['CamPoste','Cámara y poste']
-    ].map(([k,txt])=>`
+    ${items.map(([k,txt])=>`
       <div class="photo-cell">
         <div class="u">
           <input id="${idPrefix}_${k}" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="${txt}"/>
@@ -340,6 +445,9 @@ function camCard(index){
       <button class="cam-remove" type="button">Eliminar</button>
     </div>
 
+    <!-- A0 por cámara -->
+    ${planChunk(id)}
+
     <!-- Datos básicos -->
     <div class="grid">
       <div class="field">
@@ -354,14 +462,7 @@ function camCard(index){
       </div>
     </div>
 
-    <div class="grid-3">
-      <div class="field">
-        <label>Soporte (torre / poste / columna)</label>
-        <select name="${id}_soporte">
-          <option value="">— Elegí —</option>
-          <option>Torre</option><option>Poste</option><option>Columna</option>
-        </select>
-      </div>
+    <div class="grid">
       <div class="field">
         <label>Tipo de conexión</label>
         <select name="${id}_conexion">
@@ -370,7 +471,10 @@ function camCard(index){
         </select>
       </div>
       <div class="field">
-        <label>Marca y modelo del módem</label>
+        <div class="label-row">
+          <label>Marca y modelo del módem</label>
+          <label class="na"><input type="checkbox" id="${id}_modem_na"/> No aplica</label>
+        </div>
         <input type="text" name="${id}_modem" placeholder="p.ej. Huawei B311…"/>
       </div>
     </div>
@@ -401,6 +505,17 @@ function camCard(index){
         <div class="field">
           <label>Velocidad (Mbps up/down)</label>
           <input type="text" name="${id}_vel" placeholder="ej: 8 / 3"/>
+        </div>
+        <div class="field">
+          <div class="label-row">
+            <label>Potencia radioenlace (dBm)</label>
+            <label class="na"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
+          </div>
+          <input type="text" name="${id}_radio" placeholder="ej: -60"/>
+        </div>
+        <div class="field">
+          <label>Tensión (V)</label>
+          <input type="text" name="${id}_volt" placeholder="ej: 12.0"/>
         </div>
       </div>
 
@@ -436,7 +551,29 @@ function camCard(index){
   // Eliminar
   el.querySelector('.cam-remove').addEventListener('click', ()=>{ el.remove(); renumCams(); });
 
-  // Geolocalización robusta (móvil/desktop)
+  // Bind "No aplica" toggles
+  const bindNA = (chk, input)=>{
+    if(!chk || !input) return;
+    const apply=()=>{
+      if(chk.checked){
+        input.disabled=true;
+        input.classList.add('na-disabled');
+        if(!input.dataset.prevPlaceholder) input.dataset.prevPlaceholder=input.placeholder||'';
+        input.placeholder='No aplica';
+        input.value='';
+      }else{
+        input.disabled=false;
+        input.classList.remove('na-disabled');
+        input.placeholder=input.dataset.prevPlaceholder||'';
+      }
+    };
+    chk.addEventListener('change', apply);
+    apply();
+  };
+  bindNA(el.querySelector(`#cam_${index}_modem_na`), el.querySelector(`[name="${id}_modem"]`));
+  bindNA(el.querySelector(`#cam_${index}_radio_na`), el.querySelector(`[name="${id}_radio"]`));
+
+  // Geolocalización robusta
   el.querySelector('[data-act="geo"]').addEventListener('click', async ()=>{
     const opts = { enableHighAccuracy:true, timeout:15000, maximumAge:0 };
     const apply = ({coords})=>{
@@ -470,7 +607,10 @@ addCam();
 
 // ===== Mensajes UI
 const formMsg=$('#formMsg');
-function msg(kind, text){ formMsg.className = kind; formMsg.textContent = text; }
+function msg(kind, text){
+  formMsg.className = kind ? kind : '';
+  formMsg.textContent = text;
+}
 
 // ===== Imagen helper
 function readImageAsDataURL(file, maxW=600, quality=.85){
@@ -488,6 +628,39 @@ function readImageAsDataURL(file, maxW=600, quality=.85){
   });
 }
 
+// ===== Validaciones (por cámara)
+function validarPrevios(){
+  const cards = $$('.cam-card', camList);
+  if(!cards.length){ msg('err','Agregá al menos una cámara.'); return false; }
+
+  let ok = true;
+  for (const [i,card] of cards.entries()){
+    const tipo = card.querySelector(`#cam_${i}_tipo`)?.value;
+    const ub = card.querySelector(`#cam_${i}_chkUbic`)?.checked;
+    const sat = card.querySelector(`#cam_${i}_chkSat`)?.checked;
+
+    if(!tipo){ msg('err',`Seleccioná Tipo de trabajo en la Cámara #${i+1}.`); ok=false; break; }
+    if(!ub || !sat){ msg('err',`Confirmá Ubicación e imagen satelital en la Cámara #${i+1}.`); ok=false; break; }
+
+    // Si es A2/A4 exigir Tensión y, salvo "No aplica", Potencia
+    if(['A2','A4'].includes(tipo)){
+      const radioNA = card.querySelector(`#cam_${i}_radio_na`)?.checked;
+      const radioVal = card.querySelector('[name$="_radio"]')?.value;
+      const voltVal  = card.querySelector('[name$="_volt"]')?.value;
+      if(!voltVal){ msg('err',`Para A2/A4, completá Tensión en la Cámara #${i+1}.`); ok=false; break; }
+      if(!radioNA && !radioVal){ msg('err',`Para A2/A4, completá Potencia radioenlace o marcá "No aplica" en la Cámara #${i+1}.`); ok=false; break; }
+    }
+  }
+  if(!ok) return false;
+
+  // Confirmación de oficina global obligatoria
+  if(!$('#confOficina').checked){
+    msg('err','No podés cerrar sin confirmación de Oficina (visibilidad remota).');
+    return false;
+  }
+  return true;
+}
+
 // ===== PDF =====
 async function generarPDF(){
   const { jsPDF } = window.jspdf || {}; if(!jsPDF) throw new Error('jsPDF no cargado');
@@ -500,21 +673,20 @@ async function generarPDF(){
   doc.text('Agronomía Inteligente SRL — Parte de instalación', M, y); y+=22;
   doc.setDrawColor(245,158,11); doc.setLineWidth(2); doc.line(M,y,pageW-M,y); y+=16;
 
-  // Datos del servicio
+  // A) Datos del servicio
   const A = [
     ['Cliente', $('#cliNombre').value||''], ['Teléfono', $('#cliTel').value||''],
     ['Dirección', $('#cliDireccion').value||''], ['Ciudad/Prov.', $('#cliCiudad').value||''],
     ['Técnico', $('#tecNombre').value||''], ['Fecha', $('#fechaInst').value||'']
   ];
-  doc.autoTable({ startY:y, head:[['Campo','Valor']], body:A, theme:'grid',
+  doc.autoTable({ startY:y, head:[['A) Datos del servicio','Valor']], body:A, theme:'grid',
     styles:{ fontSize:9.5, cellPadding:5 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
-  y = doc.lastAutoTable.finalY + 14;
+  y = doc.lastAutoTable.finalY + 12;
 
-  // Cada cámara (datos + pruebas + fotos) con marco
+  // Cámaras
   for (const [i,el] of $$('.cam-card', camList).entries()) {
     if(y>pageH-280){ doc.addPage(); y=M; }
 
-    // bloque start con acolchado superior para que NO toque el título
     const blockX = M-6, blockW = pageW - 2*M + 12;
     const blockTopPadding = 18;
     let y0 = y + blockTopPadding;
@@ -524,17 +696,38 @@ async function generarPDF(){
     doc.text(`Cámara #${i+1}`, M, y0); 
     y0 += 12;
 
-    // Tabla datos
+    // A0 por cámara
+    const A0 = [
+      ['Tipo de trabajo', el.querySelector(`#cam_${i}_tipo`)?.value || '—'],
+      ['Estructura', el.querySelector(`#cam_${i}_estructura`)?.value || '—'],
+      ['Ubicación confirmada', el.querySelector(`#cam_${i}_chkUbic`)?.checked ? 'Sí':'No'],
+      ['Revisión con imagen satelital', el.querySelector(`#cam_${i}_chkSat`)?.checked ? 'Sí':'No'],
+      ['Herramientas básicas presentes', el.querySelector(`#cam_${i}_chkHerr`)?.checked ? 'Sí':'No'],
+    ];
+    doc.autoTable({
+      startY:y0, head:[['A0) Parámetros técnicos','Valor']], body:A0, theme:'grid',
+      styles:{ fontSize:9.5, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] },
+      margin:{ left:M, right:M }
+    });
+    y0 = doc.lastAutoTable.finalY + 8;
+
+    // Datos de cámara (con NA)
+    const modemNA = el.querySelector(`#cam_${i}_modem_na`)?.checked;
+    const modemVal = el.querySelector(`[name="cam_${i}_modem"]`)?.value || '';
+    const radioNA = el.querySelector(`#cam_${i}_radio_na`)?.checked;
+    const radioVal = el.querySelector(`[name="cam_${i}_radio"]`)?.value || '';
+
     const body = [
-      ['Modelo', el.querySelector('select').value],
-      ['Serie', el.querySelector('[name$="_serie"]').value],
-      ['Soporte', el.querySelector('[name$="_soporte"]').value],
-      ['Tipo de conexión', el.querySelector('[name$="_conexion"]').value],
-      ['Módem (marca/modelo)', el.querySelector('[name$="_modem"]').value],
-      ['Operador/APN', `${el.querySelector('[name$="_operador"]').value} / ${el.querySelector('[name$="_apn"]').value}`],
-      ['Señal (dBm)', el.querySelector('[name$="_rssi"]').value],
-      ['Velocidad', el.querySelector('[name$="_vel"]').value],
-      ['Lat/Lon (GMS)', `${el.querySelector('[name$="_latGms"]').value} , ${el.querySelector('[name$="_lonGms"]').value}`]
+      ['Modelo', el.querySelector(`[name="cam_${i}_modelo"]`)?.value || ''],
+      ['Serie', el.querySelector(`[name="cam_${i}_serie"]`)?.value || ''],
+      ['Tipo de conexión', el.querySelector(`[name="cam_${i}_conexion"]`)?.value || ''],
+      ['Módem (marca/modelo)', modemNA ? 'No aplica' : modemVal],
+      ['Operador/APN', `${el.querySelector('[name$="_operador"]')?.value || ''} / ${el.querySelector('[name$="_apn"]')?.value || ''}`],
+      ['Señal (dBm)', el.querySelector('[name$="_rssi"]')?.value || ''],
+      ['Velocidad', el.querySelector('[name$="_vel"]')?.value || ''],
+      ['Potencia radioenlace (dBm)', radioNA ? 'No aplica' : (radioVal || '')],
+      ['Tensión (V)', el.querySelector('[name$="_volt"]')?.value || ''],
+      ['Lat/Lon (GMS)', `${el.querySelector('[name$="_latGms"]')?.value || ''} , ${el.querySelector('[name$="_lonGms"]')?.value || ''}`]
     ];
     doc.autoTable({
       startY: y0,
@@ -544,7 +737,7 @@ async function generarPDF(){
     });
     y0 = doc.lastAutoTable.finalY + 8;
 
-    // Pruebas por cámara
+    // Pruebas
     const tests = [
       ['Vista en vivo', el.querySelector(`#cam_${i}_t_vivo`)?.checked ? 'Sí':'No'],
       ['Notificaciones en la app del cliente', el.querySelector(`#cam_${i}_t_noti`)?.checked ? 'Sí':'No'],
@@ -560,10 +753,11 @@ async function generarPDF(){
     });
     y0 = doc.lastAutoTable.finalY + 10;
 
-    // Fotos de la cámara
-    const fileIds = ['Poste','Vivo','Carga','Modem','Senal','CamPoste'].map(s=>`#cam_${i}_${s}`);
+    // Fotos (solo 6)
+    const keys = ['Poste','Vivo','Carga','Fij','Senal','CamPoste'];
     const items=[];
-    for(const sel of fileIds){
+    for(const k of keys){
+      const sel = `#cam_${i}_${k}`;
       const inp = el.querySelector(sel);
       const f = inp?.files?.[0];
       if(!f) continue;
@@ -601,7 +795,7 @@ async function generarPDF(){
       y0 += rowH;
     }
 
-    // Dibujar el marco del bloque de la cámara
+    // Marco del bloque de la cámara
     const blockY = y + 2;
     const blockH = (y0 - y) + 8;
     doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
@@ -609,24 +803,36 @@ async function generarPDF(){
     doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
     doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
 
-    y = blockY + blockH + 12; // aire entre cámaras
+    y = blockY + blockH + 12;
   }
 
   // Observaciones generales
-  if (y>pageH-160){ doc.addPage(); y=M; }
+  if (y>pageH-200){ doc.addPage(); y=M; }
   doc.setFont('helvetica','bold'); doc.setFontSize(12);
   doc.text('Observaciones generales', M, y); y+=12;
   doc.setFont('helvetica','normal'); doc.setFontSize(10);
   doc.text(doc.splitTextToSize($('#obs').value||'—', pageW-2*M), M, y);
-  y += 54;
+  y += 36;
+
+  // Calidad y seguridad
+  doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text('Calidad y seguridad', M, y); y+=10;
+  const qual = [
+    ['Conexiones y cableado OK', $('#okCableado').checked?'Sí':'No'],
+    ['Montura verificada', $('#okMontura').checked?'Sí':'No'],
+    ['Protección contra cotorras', $('#okCotorra').checked?'Sí':'No'],
+  ];
+  doc.autoTable({ startY:y, body:qual, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
+  y = doc.lastAutoTable.finalY + 18;
 
   // Cierre técnico
-  if (y>pageH-160){ doc.addPage(); y=M; }
+  if (y>pageH-180){ doc.addPage(); y=M; }
   doc.setFont('helvetica','bold'); doc.setFontSize(12);
   doc.text('Cierre del técnico', M, y); y+=10;
 
   const sig = $('#canvasFirm'); const dni = $('#dniTec').value||'';
   const hIni = $('#horaIni').value||''; const hFin = $('#horaFin').value||'';
+  const horaConf = $('#horaConf').value||''; const validador = $('#validador').value||'';
   if(sig){
     const data = sig.toDataURL('image/png');
     doc.addImage(data,'PNG',M,y,220,110);
@@ -634,6 +840,9 @@ async function generarPDF(){
     doc.text(`DNI: ${dni}`, M+240, y+24);
     doc.text(`Hora inicio: ${hIni}`, M+240, y+44);
     doc.text(`Hora fin: ${hFin}`, M+240, y+64);
+    doc.text(`Confirmación oficina: ${$('#confOficina').checked?'Sí':'No'}`, M+240, y+84);
+    if(horaConf) doc.text(`Hora confirmación: ${horaConf}`, M+240, y+104);
+    if(validador) doc.text(`Validador: ${validador}`, M+240, y+124);
     y += 120;
   }
 
@@ -649,6 +858,8 @@ async function generarPDF(){
 $('#btnEnviar')?.addEventListener('click', async ()=>{
   const form = $('#formInstalacion');
   if (!form.checkValidity()){ form.reportValidity(); return msg('err','Completá los campos requeridos.'); }
+  if (!validarPrevios()) return;
+
   try{ await generarPDF(); msg('ok','Formulario exportado como PDF.'); }
   catch(e){ console.error(e); msg('err','No se pudo generar el PDF.'); }
 });
@@ -657,4 +868,3 @@ $('#btnReset')?.addEventListener('click', ()=> msg('', ''));
   </script>
 </body>
 </html>
-
