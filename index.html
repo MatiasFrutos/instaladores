@@ -10,138 +10,140 @@
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-
     /* ===== Baseline ===== */
-*{ box-sizing:border-box; }
-:root{
-  --bg:#f6f7fb; --panel:#fff; --ink:#0f172a; --mut:#475569;
-  --line:#e5e7eb; --line-weak:#eef2f7; --accent:#f59e0b; /* amarillo */
-  --ok:#10b981; --err:#ef4444; --radius:10px;
-  --shadow:0 6px 16px rgba(0,0,0,.06);
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-}
-html,body{ background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.25; }
-.wrap{ max-width:1080px; margin:14px auto 28px; padding:0 12px; }
+    *{ box-sizing:border-box; }
+    :root{
+      --bg:#f6f7fb; --panel:#fff; --ink:#0f172a; --mut:#374151;
+      --line:#e5e7eb; --line-weak:#eef2f7; --accent:#f59e0b; /* amarillo */
+      --ok:#10b981; --err:#ef4444; --radius:10px;
+      --shadow:0 6px 16px rgba(0,0,0,.06);
+      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+    html,body{ background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.25; }
+    .wrap{ max-width:1080px; margin:14px auto 28px; padding:0 12px; }
 
-/* ===== Masthead ===== */
-.masthead{ position:relative; border-bottom:1px solid #111; }
-.masthead::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px;
-  background:linear-gradient(90deg,var(--accent),rgba(245,158,11,0)); }
-.mast-inner{ display:flex; align-items:center; gap:12px; padding:8px 0; }
-#logoImg{ max-height:56px; width:auto; }
-.brand{ margin:0; font-size:1.35rem; }
-.subtitle{ margin:2px 0 0; color:var(--mut); }
+    /* ===== Masthead ===== */
+    .masthead{ position:relative; border-bottom:1px solid #111; }
+    .masthead::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px;
+      background:linear-gradient(90deg,var(--accent),rgba(245,158,11,0)); }
+    .mast-inner{ display:flex; align-items:center; gap:12px; padding:8px 0; }
+    #logoImg{ max-height:56px; width:auto; }
+    .brand{ margin:0; font-size:1.35rem; }
+    .subtitle{ margin:2px 0 0; color:var(--mut); }
 
-/* ===== Cards ===== */
-.card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-  padding:12px; box-shadow:var(--shadow); margin-bottom:12px; }
-.card-title{ margin:0 0 8px; font-size:1.02rem; font-weight:700; }
-.card-title-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 4px; margin-bottom:14px; }
+    /* ===== Cards ===== */
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+      padding:12px; box-shadow:var(--shadow); margin-bottom:12px; }
+    .card-title{ margin:0 0 8px; font-size:1.02rem; font-weight:700; }
+    .card-title-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 4px; margin-bottom:14px; }
 
-/* ===== Grids ===== */
-.grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-.two{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-.grid-3{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
-@media (max-width:980px){ .grid-3{ grid-template-columns: 1fr 1fr; } }
-@media (max-width:720px){ .grid, .two, .grid-3{ grid-template-columns:1fr; } }
-.stack{ display:grid; gap:12px; }
+    /* ===== Grids ===== */
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .two{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .grid-3{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+    @media (max-width:980px){ .grid-3{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width:720px){ .grid, .two, .grid-3{ grid-template-columns:1fr; } }
+    .stack{ display:grid; gap:12px; }
 
-/* ===== Campos ===== */
-.field{ display:flex; flex-direction:column; gap:10px; min-width:0; }
-label{ font-size:.92rem; color:var(--mut); }
-.req{ color:var(--err); }
-input[type="text"], input[type="tel"], input[type="date"], input[type="time"],
-input[type="number"], select, textarea{
-  width:100%; min-height:36px; font-size:.94rem;
-  padding:10px 12px; color:var(--ink); background:#fff;
-  border:1px solid var(--line); border-radius:8px; outline:none;
-  transition:border-color .12s ease, box-shadow .12s ease;
-}
-textarea{ min-height:128px; padding-top:16px; padding-bottom:16px; }
-input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(245,158,11,.18); }
-.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    /* ===== Campos ===== */
+    .field{ display:flex; flex-direction:column; gap:10px; min-width:0; }
+    label{ font-size:.92rem; color:var(--mut); }
+    .req{ color:var(--err); }
+    input[type="text"], input[type="tel"], input[type="date"], input[type="time"],
+    input[type="number"], select, textarea{
+      width:100%; min-height:36px; font-size:.94rem;
+      padding:10px 12px; color:var(--ink); background:#fff;
+      border:1px solid var(--line); border-radius:8px; outline:none;
+      transition:border-color .12s ease, box-shadow .12s ease;
+    }
+    textarea{ min-height:128px; padding-top:16px; padding-bottom:16px; }
+    input:focus, select:focus, textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(245,158,11,.18); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 
-/* ===== Checks ===== */
-.check{ display:inline-flex; align-items:center; gap:8px; color:#111; font-size:.94rem; }
-.check input{ width:16px; height:16px; }
-.checkgrid{ margin-top:6px; }
-.checkrow{ display:flex; flex-wrap:wrap; gap:12px; }
+    /* ===== Checks ===== */
+    .check{ display:inline-flex; align-items:center; gap:8px; color:#111; font-size:.94rem; }
+    .check input{ width:16px; height:16px; }
+    .checkgrid{ margin-top:6px; }
+    .checkrow{ display:flex; flex-wrap:wrap; gap:12px; }
 
-/* ===== Subtítulos de bloque ===== */
-.subttl{ margin:8px 0 6px; font-weight:700; color:#111; }
+    /* ===== Subtítulos de bloque ===== */
+    .subttl{ margin:8px 0 6px; font-weight:700; color:#111; }
 
-/* ===== Cajas especiales ===== */
-.tools-box, .quality, .confirm-box{
-  border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; margin-top:10px;
-}
+    /* ===== Cajas especiales ===== */
+    .tools-box, .quality, .confirm-box{
+      border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; margin-top:10px;
+    }
 
-/* ===== Etiqueta "No aplica" ===== */
-.label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.label-row .na{ display:inline-flex; align-items:center; gap:6px; color:#991b1b; font-size:.88rem; font-weight:600; }
-.na input{ width:16px; height:16px; }
-.na-disabled{ background:#f9fafb; color:#6b7280; }
+    /* ===== Etiqueta "No aplica" ===== */
+    .label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .label-row .na{ display:inline-flex; align-items:center; gap:6px; color:#991b1b; font-size:.88rem; font-weight:600; }
+    .na input{ width:16px; height:16px; }
+    .na-disabled{ background:#f9fafb; color:#6b7280; }
 
-/* ===== Fotos de cada cámara ===== */
-.photo-grid{
-  display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-top:6px;
-}
-.u{ position:relative; }
-.u input.foto-labeled{ position:absolute; inset:0; opacity:0; cursor:pointer; }
-.u label{
-  display:flex; align-items:center; justify-content:center; gap:8px; min-height:58px;
-  border:1px dashed var(--line); border-radius:10px; background:#fff; font-weight:600; cursor:pointer;
-}
-.u label:hover{ border-color:var(--accent); box-shadow:var(--shadow); }
-.photo-cell{ display:flex; flex-direction:column; gap:6px; }
-.ph-caption{ color:var(--mut); font-size:.85rem; }
+    /* ===== Fotos de cada cámara ===== */
+    .photo-grid{
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-top:6px;
+    }
+    .u{ position:relative; }
+    .u input.foto-labeled{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+    .u label{
+      display:flex; align-items:center; justify-content:center; gap:8px; min-height:58px;
+      border:1px dashed var(--line); border-radius:10px; background:#fff; font-weight:600; cursor:pointer;
+    }
+    .u label:hover{ border-color:var(--accent); box-shadow:var(--shadow); }
+    .photo-cell{ display:flex; flex-direction:column; gap:6px; }
+    .ph-caption{ color:var(--mut); font-size:.85rem; }
 
-/* ===== Firma ===== */
-.sig-pad{ border:2px dashed var(--line-weak); border-radius:10px; padding:8px; background:#fff; }
-.sig-pad canvas{
-  width:100%; height:180px;
-  background:#fff; border:1.5px solid var(--line-weak); border-radius:8px;
-  touch-action: none;
-}
+    /* ===== Firma ===== */
+    .sig-pad{ border:2px dashed var(--line-weak); border-radius:10px; padding:8px; background:#fff; }
+    .sig-pad canvas{
+      width:100%; height:180px;
+      background:#fff; border:1.5px solid var(--line-weak); border-radius:8px;
+      touch-action: none;
+    }
 
-/* ===== Botones / mensajes ===== */
-.actions{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:8px 11px; border-radius:10px; border:1px solid var(--line);
-  background:#fff; color:#111827; cursor:pointer; font-weight:600; font-size:.92rem; }
-.btn.primary{ background:linear-gradient(180deg, rgba(245,158,11,.94), rgba(245,158,11,.86)); border-color:#f5b219; }
-.btn.ghost{ background:#fff; border-style:dashed; }
-.btn.small{ padding:7px 12px; font-size:.9rem; }
+    /* ===== Botones / mensajes ===== */
+    .actions{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:8px 11px; border-radius:10px; border:1px solid var(--line);
+      background:#fff; color:#111827; cursor:pointer; font-weight:600; font-size:.92rem; }
+    .btn.primary{ background:linear-gradient(180deg, rgba(245,158,11,.94), rgba(245,158,11,.86)); border-color:#f5b219; }
+    .btn.ghost{ background:#fff; border-style:dashed; }
+    .btn.small{ padding:7px 12px; font-size:.9rem; }
 
-#formMsg{ font-size:.9rem; padding:8px 10px; border-radius:8px; }
-#formMsg.ok{ color:#065f46; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.35); }
-#formMsg.err{ color:#991b1b; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); }
+    #formMsg{ font-size:.9rem; padding:8px 10px; border-radius:8px; }
+    #formMsg.ok{ color:#065f46; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.35); }
+    #formMsg.err{ color:#991b1b; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); }
 
-.counter{ margin-top:4px; font-size:.86rem; color:var(--mut); text-align:right; }
-.site-foot{ margin:18px auto 24px; text-align:center; color:var(--mut); font-size:.9rem; }
+    .counter{ margin-top:4px; font-size:.86rem; color:var(--mut); text-align:right; }
+    .site-foot{ margin:18px auto 24px; text-align:center; color:var(--mut); font-size:.9rem; }
 
-/* ===== Tarjeta de cámara ===== */
-.cam-card{ border:1px solid var(--line); border-radius:10px; padding:12px; background:#fff; }
-.cam-head{ display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:8px; }
-.cam-title{ margin:0; font-weight:700; font-size:1.02rem; }
-.cam-remove{ border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#fff; }
+    /* ===== Tarjeta de cámara ===== */
+    .cam-card{ border:1px solid var(--line); border-radius:10px; padding:12px; background:#fff; }
+    .cam-head{ display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .cam-title{ margin:0; font-weight:700; font-size:1.02rem; }
+    .cam-remove{ border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#fff; }
 
-.cam-card .subttl{ margin:10px 0 6px; font-weight:700; color:#111; }
-.cam-card .block{ border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; }
-.cam-card .actions{ margin-top:12px; padding-top:8px; border-top:1px dashed var(--line); }
+    .cam-card .subttl{ margin:10px 0 6px; font-weight:700; color:#111; }
+    .cam-card .block{ border:1px dashed var(--line); border-radius:10px; padding:10px; background:#fff; }
+    .cam-card .actions{ margin-top:12px; padding-top:8px; border-top:1px dashed var(--line); }
 
-/* ===== Alerta roja ===== */
-.alert{
-  border-radius:12px; padding:12px; background:#fff; margin:12px 0; border:2px solid transparent;
-}
-.alert.red{ border-color:#dc2626; box-shadow:0 0 0 3px rgba(220,38,38,.08) inset; }
-.alert-title{ font-weight:800; color:#b91c1c; margin-bottom:6px; }
-.alert.red ul{ margin:6px 0 0 18px; }
-.alert.red li{ margin:6px 0; line-height:1.35; }
+    /* ===== Alerta roja ===== */
+    .alert{
+      border-radius:12px; padding:12px; background:#fff; margin:12px 0; border:2px solid transparent;
+    }
+    .alert.red{ border-color:#dc2626; box-shadow:0 0 0 3px rgba(220,38,38,.08) inset; }
+    .alert-title{ font-weight:800; color:#b91c1c; margin-bottom:6px; }
+    .alert.red ul{ margin:6px 0 0 18px; }
+    .alert.red li{ margin:6px 0; line-height:1.35; }
 
-/* Ajustes menores */
-.card > .grid-3 + .field { margin-top: 16px; }
-label[for="obs"]{ display:block; margin-bottom:6px; }
+    /* Invalid helper */
+    .invalid{ border-color:#ef4444 !important; box-shadow:0 0 0 2px rgba(239,68,68,.12) !important; }
+    .help{ font-size:.8rem; color:#b91c1c; }
 
+    /* Ajustes menores */
+    .card > .grid-3 + .field { margin-top: 16px; }
+    label[for="obs"]{ display:block; margin-bottom:6px; }
   </style>
 </head>
 <body>
@@ -159,7 +161,7 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
   <main class="wrap">
     <form id="formInstalacion" novalidate>
 
-      <!-- A) DATOS DEL SERVICIO (arriba siempre) -->
+      <!-- A) DATOS DEL SERVICIO -->
       <section class="card">
         <h2 class="card-title">A) Datos del servicio</h2>
         <div class="grid">
@@ -201,8 +203,7 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         </div>
         <div id="camList" class="stack"></div>
       </section>
-
-      <!-- C) OBSERVACIONES GENERALES + CALIDAD/SEGURIDAD -->
+      <!-- C) OBSERVACIONES Y CALIDAD -->
       <section class="card">
         <h2 class="card-title">C) Observaciones y calidad</h2>
         <div class="field">
@@ -221,7 +222,7 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
         </div>
       </section>
 
-      <!-- AVISO IMPORTANTE (rojo) AL FINAL -->
+      <!-- AVISO IMPORTANTE (rojo) -->
       <section class="alert red" id="alertPagoGarantia" role="note" aria-live="polite">
         <div class="alert-title">Importante — Condiciones comerciales y garantía</div>
         <ul>
@@ -287,584 +288,758 @@ label[for="obs"]{ display:block; margin-bottom:6px; }
 
   <script>
     // ===== Helpers
-const $ = (s, c=document)=>c.querySelector(s);
-const $$ = (s, c=document)=>[...c.querySelectorAll(s)];
+    const $ = (s, c=document)=>c.querySelector(s);
+    const $$ = (s, c=document)=>[...c.querySelectorAll(s)];
 
-// Año
-$('#year').textContent = new Date().getFullYear();
+    // Persistencia básica
+    const DRAFT_KEY = 'ai_parte_instalacion_v1';
+    const throttle = (fn, wait=500)=>{ let t=0; return (...a)=>{ const now=Date.now(); if(now-t>wait){ t=now; fn(...a);} }; };
 
-// Fallback del logo
-$('#logoImg')?.addEventListener('error', ()=>{
-  const svg = 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="70"><rect width="100%" height="100%" fill="#fff"/><text x="50%" y="54%" text-anchor="middle" font-family="Helvetica, Arial" font-size="18" fill="#111827">Agronomía Inteligente SRL</text></svg>`);
-  $('#logoImg').src = svg;
-});
+    // Año
+    $('#year').textContent = new Date().getFullYear();
 
-// Fecha por defecto hoy
-(()=>{
-  const i=$('#fechaInst'); if(!i) return;
-  const tz=(new Date()).getTimezoneOffset()*60000;
-  i.value=new Date(Date.now()-tz).toISOString().slice(0,10);
-})();
+    // Fallback del logo
+    $('#logoImg')?.addEventListener('error', ()=>{
+      const svg = 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="70"><rect width="100%" height="100%" fill="#fff"/><text x="50%" y="54%" text-anchor="middle" font-family="Helvetica, Arial" font-size="18" fill="#111827">Agronomía Inteligente SRL</text></svg>`);
+      $('#logoImg').src = svg;
+    });
 
-// Contador Observaciones
-(()=>{
-  const ta=$('#obs'), out=$('#countObs'); if(!ta||!out) return; const MAX=800;
-  const upd=()=>{
-    const n=Math.min(ta.value.length,MAX);
-    out.textContent=`${n}/${MAX}`;
-    if(ta.value.length>MAX) ta.value=ta.value.slice(0,MAX);
-  };
-  ta.addEventListener('input',upd); upd();
-})();
+    // Fecha por defecto hoy
+    (()=>{ const i=$('#fechaInst'); if(!i) return; const tz=(new Date()).getTimezoneOffset()*60000; i.value=new Date(Date.now()-tz).toISOString().slice(0,10); })();
 
-// ===== Firma (Pointer Events, móvil/desktop)
-(()=> {
-  const canvas=$('#canvasFirm'); if(!canvas) return;
-  const ctx=canvas.getContext('2d', { willReadFrequently:true });
-  let drawing=false;
+    // Contador Observaciones
+    (()=>{ const ta=$('#obs'), out=$('#countObs'); if(!ta||!out) return; const MAX=800;
+      const upd=()=>{ const n=Math.min(ta.value.length,MAX); out.textContent=`${n}/${MAX}`; if(ta.value.length>MAX) ta.value=ta.value.slice(0,MAX); };
+      ta.addEventListener('input',upd); upd();
+    })();
 
-  function resize(){
-    const dpr=window.devicePixelRatio||1;
-    const w=canvas.clientWidth, h=canvas.clientHeight;
-    canvas.width=Math.max(600, Math.floor(w*dpr));
-    canvas.height=Math.floor(h*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827';
-  }
-  resize(); addEventListener('resize', resize);
+    // ===== Firma (Pointer Events, móvil/desktop)
+    (() => {
+      const canvas=$('#canvasFirm'); if(!canvas) return;
+      const ctx=canvas.getContext('2d', { willReadFrequently:true });
+      let drawing=false;
 
-  const pos=e=>{ const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
-  const down=e=>{ drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); };
-  const move=e=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
-  const up=()=>{ drawing=false; };
-
-  canvas.addEventListener('pointerdown',down);
-  canvas.addEventListener('pointermove',move);
-  addEventListener('pointerup',up);
-  addEventListener('pointercancel',up);
-
-  $('#btnClearFirm')?.addEventListener('click', ()=> ctx.clearRect(0,0,canvas.width,canvas.height));
-})();
-
-// ===== Util: dec -> GMS
-function toDMS(dec, isLat=true){
-  const dir = dec>=0 ? (isLat?'N':'E') : (isLat?'S':'W');
-  const abs = Math.abs(dec);
-  const d = Math.floor(abs);
-  const mFloat = (abs - d) * 60;
-  const m = Math.floor(mFloat);
-  const s = ((mFloat - m) * 60).toFixed(1);
-  return `${d}°${m}′${s}″ ${dir}`;
-}
-
-// ===== Cámaras dinámicas =====
-const camList = $('#camList');
-const modelos = [
-  'HIKVISION DOMO PRO SOLAR',
-  'HIKVISION DOMO COLORVU SOLAR',
-  'HIKVISION FIJA SOLAR',
-  'HIKVISION FIJA HOGAREÑA'
-];
-let camIndex = 0;
-
-function planChunk(idPrefix){
-  return `
-  <div class="block">
-    <div class="subttl">A0) Parámetros técnicos</div>
-
-    <div class="grid">
-      <div class="field">
-        <label for="${idPrefix}_tipo">Tipo de trabajo <span class="req">*</span></label>
-        <select id="${idPrefix}_tipo" name="${idPrefix}_tipo" required>
-          <option value="">— Elegí —</option>
-          <option value="A1">A1 — Instalación cámaras nuevas</option>
-          <option value="A2">A2 — Instalación cámaras viejas</option>
-          <option value="A3">A3 — Soporte cámaras nuevas</option>
-          <option value="A4">A4 — Soporte cámaras viejas</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="${idPrefix}_estructura">Estructura</label>
-        <select id="${idPrefix}_estructura" name="${idPrefix}_estructura">
-          <option value="">— Elegí —</option>
-          <option>Torre</option><option>Poste</option><option>Columna</option><option>Techo</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="grid-3 checkgrid">
-      <label class="check"><input type="checkbox" id="${idPrefix}_chkUbic"/> <span>Ubicación confirmada</span></label>
-      <label class="check"><input type="checkbox" id="${idPrefix}_chkSat"/> <span>Revisión con imagen satelital</span></label>
-      <label class="check"><input type="checkbox" id="${idPrefix}_chkHerr"/> <span>Herramientas básicas presentes</span></label>
-    </div>
-  </div>`;
-}
-
-function photoChunk(idPrefix){
-  const items = [
-    ['Poste','Poste'],
-    ['Vivo','Vista en vivo desde PC/celular'],
-    ['Carga','Carga del panel solar'],
-    ['Fij','Cámara instalada en poste — fijaciones (vista posterior)'],
-    ['Senal','Nivel de señal'],
-    ['CamPoste','Cámara y poste — vista completa']
-  ];
-  return `
-  <div class="photo-grid">
-    ${items.map(([k,txt])=>`
-      <div class="photo-cell">
-        <div class="u">
-          <input id="${idPrefix}_${k}" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="${txt}"/>
-          <label for="${idPrefix}_${k}">📷 ${txt}</label>
-        </div>
-        <small class="ph-caption">${txt}</small>
-      </div>
-    `).join('')}
-  </div>`;
-}
-
-function testsChunk(idPrefix){
-  return `
-  <div class="grid-3">
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_vivo"/> <span>Vista en vivo</span></label>
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_noti"/> <span>Notificaciones en la app del cliente</span></label>
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_sd"/> <span>Micro SD grabando</span></label>
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_evt"/> <span>Eventos / movimientos</span></label>
-    <label class="check"><input type="checkbox" id="${idPrefix}_t_panel"/> <span>Carga del panel solar</span></label>
-  </div>`;
-}
-
-function camCard(index){
-  const id = `cam_${index}`;
-  const el = document.createElement('div');
-  el.className = 'cam-card';
-  el.dataset.cam = id;
-  el.innerHTML = `
-    <div class="cam-head">
-      <h3 class="cam-title">Cámara #${index+1}</h3>
-      <button class="cam-remove" type="button">Eliminar</button>
-    </div>
-
-    <!-- A0 por cámara -->
-    ${planChunk(id)}
-
-    <!-- Datos básicos -->
-    <div class="grid">
-      <div class="field">
-        <label>Modelo</label>
-        <select name="${id}_modelo">
-          ${modelos.map(m=>`<option>${m}</option>`).join('')}
-        </select>
-      </div>
-      <div class="field">
-        <label>N° de serie</label>
-        <input type="text" name="${id}_serie" class="mono"/>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="field">
-        <label>Tipo de conexión</label>
-        <select name="${id}_conexion">
-          <option value="">— Elegí —</option>
-          <option>Solar</option><option>220 V</option>
-        </select>
-      </div>
-      <div class="field">
-        <div class="label-row">
-          <label>Marca y modelo del módem</label>
-          <label class="na"><input type="checkbox" id="${id}_modem_na"/> No aplica</label>
-        </div>
-        <input type="text" name="${id}_modem" placeholder="p.ej. Huawei B311…"/>
-      </div>
-    </div>
-
-    <!-- Ubicación y conectividad -->
-    <div class="block">
-      <div class="subttl">Ubicación y conectividad</div>
-      <div class="grid-3">
-        <div class="field">
-          <label>Operador SIM</label>
-          <select name="${id}_operador">
-            <option value="">— Elegí —</option><option>Movistar</option><option>Claro</option><option>Personal</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>APN configurado</label>
-          <select name="${id}_apn">
-            <option value="">— Elegí —</option>
-            <option>Movistar: internet.gprs.unifon.com.ar</option>
-            <option>Claro: igprs.claro.com.ar</option>
-            <option>Personal: gprs.personal.com</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Señal (dBm)</label>
-          <input type="text" name="${id}_rssi" placeholder="-75 / -100"/>
-        </div>
-        <div class="field">
-          <label>Velocidad (Mbps up/down)</label>
-          <input type="text" name="${id}_vel" placeholder="ej: 8 / 3"/>
-        </div>
-        <div class="field">
-          <div class="label-row">
-            <label>Potencia radioenlace (dBm)</label>
-            <label class="na"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
-          </div>
-          <input type="text" name="${id}_radio" placeholder="ej: -60"/>
-        </div>
-        <div class="field">
-          <label>Tensión (V)</label>
-          <input type="text" name="${id}_volt" placeholder="ej: 12.0"/>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="field">
-          <label>Latitud (GMS)</label>
-          <input type="text" name="${id}_latGms" placeholder='ej: 38°24′51.8″ S'/>
-        </div>
-        <div class="field">
-          <label>Longitud (GMS)</label>
-          <input type="text" name="${id}_lonGms" placeholder='ej: 61°06′30.2″ W'/>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn" type="button" data-act="geo">Usar mi ubicación</button>
-      </div>
-    </div>
-
-    <!-- Pruebas por cámara -->
-    <div class="block">
-      <div class="subttl">Pruebas y validaciones</div>
-      ${testsChunk(id)}
-    </div>
-
-    <!-- Fotos por cámara -->
-    <div class="block">
-      <div class="subttl">Fotos</div>
-      ${photoChunk(id)}
-    </div>
-  `;
-
-  // Eliminar
-  el.querySelector('.cam-remove').addEventListener('click', ()=>{ el.remove(); renumCams(); });
-
-  // Bind "No aplica" toggles
-  const bindNA = (chk, input)=>{
-    if(!chk || !input) return;
-    const apply=()=>{
-      if(chk.checked){
-        input.disabled=true;
-        input.classList.add('na-disabled');
-        if(!input.dataset.prevPlaceholder) input.dataset.prevPlaceholder=input.placeholder||'';
-        input.placeholder='No aplica';
-        input.value='';
-      }else{
-        input.disabled=false;
-        input.classList.remove('na-disabled');
-        input.placeholder=input.dataset.prevPlaceholder||'';
+      function resize(){
+        const dpr=window.devicePixelRatio||1;
+        const w=canvas.clientWidth, h=canvas.clientHeight;
+        canvas.width=Math.floor(w*dpr); // sin mínimo fijo
+        canvas.height=Math.floor(h*dpr);
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827';
       }
-    };
-    chk.addEventListener('change', apply);
-    apply();
-  };
-  bindNA(el.querySelector(`#cam_${index}_modem_na`), el.querySelector(`[name="${id}_modem"]`));
-  bindNA(el.querySelector(`#cam_${index}_radio_na`), el.querySelector(`[name="${id}_radio"]`));
+      resize(); addEventListener('resize', resize);
 
-  // Geolocalización robusta
-  el.querySelector('[data-act="geo"]').addEventListener('click', async ()=>{
-    const opts = { enableHighAccuracy:true, timeout:15000, maximumAge:0 };
-    const apply = ({coords})=>{
-      el.querySelector(`[name="${id}_latGms"]`).value = toDMS(coords.latitude,true);
-      el.querySelector(`[name="${id}_lonGms"]`).value = toDMS(coords.longitude,false);
-      msg('ok','Ubicación aplicada a la cámara.');
-    };
-    try {
-      if (navigator.permissions && navigator.permissions.query) {
-        try {
-          const st = await navigator.permissions.query({name:'geolocation'});
-          if (st.state === 'denied') { msg('err','Permiso de ubicación denegado. Activalo en el navegador.'); return; }
-        } catch {}
-      }
-      if (!('geolocation' in navigator)) { msg('err','Geolocalización no disponible en este dispositivo.'); return; }
-      navigator.geolocation.getCurrentPosition(apply, (err)=>{
-        msg('err', 'No se pudo obtener la ubicación ('+err.code+'). Verificá permisos/HTTPS.');
-      }, opts);
-    } catch {
-      msg('err','No se pudo obtener la ubicación.');
+      const pos=e=>{ const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+      const down=e=>{ drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); };
+      const move=e=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
+      const up=()=>{ drawing=false; };
+
+      canvas.addEventListener('pointerdown',down);
+      canvas.addEventListener('pointermove',move);
+      addEventListener('pointerup',up);
+      addEventListener('pointercancel',up);
+
+      $('#btnClearFirm')?.addEventListener('click', ()=> ctx.clearRect(0,0,canvas.width,canvas.height));
+    })();
+
+    // ===== Util: dec -> GMS (2 decimales)
+    function toDMS(dec, isLat=true){
+      const dir = dec>=0 ? (isLat?'N':'E') : (isLat?'S':'W');
+      const abs = Math.abs(dec);
+      const d = Math.floor(abs);
+      const mFloat = (abs - d) * 60;
+      const m = Math.floor(mFloat);
+      const s = ((mFloat - m) * 60).toFixed(2);
+      return `${d}°${m}′${s}″ ${dir}`;
     }
-  });
 
-  return el;
-}
-function renumCams(){ $$('.cam-card', camList).forEach((el,i)=> el.querySelector('.cam-title').textContent = `Cámara #${i+1}`); }
-function addCam(){ camList.appendChild(camCard(camIndex++)); }
-$('#btnAddCam')?.addEventListener('click', addCam);
-// una cámara por defecto
-addCam();
-
-// ===== Mensajes UI
-const formMsg=$('#formMsg');
-function msg(kind, text){
-  formMsg.className = kind ? kind : '';
-  formMsg.textContent = text;
-}
-
-// ===== Imagen helper
-function readImageAsDataURL(file, maxW=600, quality=.85){
-  return new Promise(resolve=>{
-    if(!file) return resolve(null);
-    const img=new Image(), fr=new FileReader();
-    fr.onload=()=> img.src=fr.result;
-    img.onload=()=>{
-      const scale=Math.min(1,maxW/img.width);
-      const c=document.createElement('canvas'); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
-      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-      resolve(c.toDataURL('image/jpeg',quality));
-    };
-    fr.readAsDataURL(file);
-  });
-}
-
-// ===== Validaciones (por cámara)
-function validarPrevios(){
-  const cards = $$('.cam-card', camList);
-  if(!cards.length){ msg('err','Agregá al menos una cámara.'); return false; }
-
-  let ok = true;
-  for (const [i,card] of cards.entries()){
-    const tipo = card.querySelector(`#cam_${i}_tipo`)?.value;
-    const ub = card.querySelector(`#cam_${i}_chkUbic`)?.checked;
-    const sat = card.querySelector(`#cam_${i}_chkSat`)?.checked;
-
-    if(!tipo){ msg('err',`Seleccioná Tipo de trabajo en la Cámara #${i+1}.`); ok=false; break; }
-    if(!ub || !sat){ msg('err',`Confirmá Ubicación e imagen satelital en la Cámara #${i+1}.`); ok=false; break; }
-
-    // Si es A2/A4 exigir Tensión y, salvo "No aplica", Potencia
-    if(['A2','A4'].includes(tipo)){
-      const radioNA = card.querySelector(`#cam_${i}_radio_na`)?.checked;
-      const radioVal = card.querySelector('[name$="_radio"]')?.value;
-      const voltVal  = card.querySelector('[name$="_volt"]')?.value;
-      if(!voltVal){ msg('err',`Para A2/A4, completá Tensión en la Cámara #${i+1}.`); ok=false; break; }
-      if(!radioNA && !radioVal){ msg('err',`Para A2/A4, completá Potencia radioenlace o marcá "No aplica" en la Cámara #${i+1}.`); ok=false; break; }
-    }
-  }
-  if(!ok) return false;
-
-  // Confirmación de oficina global obligatoria
-  if(!$('#confOficina').checked){
-    msg('err','No podés cerrar sin confirmación de Oficina (visibilidad remota).');
-    return false;
-  }
-  return true;
-}
-
-// ===== PDF =====
-async function generarPDF(){
-  const { jsPDF } = window.jspdf || {}; if(!jsPDF) throw new Error('jsPDF no cargado');
-  const doc = new jsPDF({ unit:'pt', format:'a4' });
-  const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
-  const M=56; let y=M;
-
-  // Encabezado
-  doc.setFont('helvetica','bold'); doc.setFontSize(15);
-  doc.text('Agronomía Inteligente SRL — Parte de instalación', M, y); y+=22;
-  doc.setDrawColor(245,158,11); doc.setLineWidth(2); doc.line(M,y,pageW-M,y); y+=16;
-
-  // A) Datos del servicio
-  const A = [
-    ['Cliente', $('#cliNombre').value||''], ['Teléfono', $('#cliTel').value||''],
-    ['Dirección', $('#cliDireccion').value||''], ['Ciudad/Prov.', $('#cliCiudad').value||''],
-    ['Técnico', $('#tecNombre').value||''], ['Fecha', $('#fechaInst').value||'']
-  ];
-  doc.autoTable({ startY:y, head:[['A) Datos del servicio','Valor']], body:A, theme:'grid',
-    styles:{ fontSize:9.5, cellPadding:5 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
-  y = doc.lastAutoTable.finalY + 12;
-
-  // Cámaras
-  for (const [i,el] of $$('.cam-card', camList).entries()) {
-    if(y>pageH-280){ doc.addPage(); y=M; }
-
-    const blockX = M-6, blockW = pageW - 2*M + 12;
-    const blockTopPadding = 18;
-    let y0 = y + blockTopPadding;
-
-    // Título
-    doc.setFont('helvetica','bold'); doc.setFontSize(12);
-    doc.text(`Cámara #${i+1}`, M, y0); 
-    y0 += 12;
-
-    // A0 por cámara
-    const A0 = [
-      ['Tipo de trabajo', el.querySelector(`#cam_${i}_tipo`)?.value || '—'],
-      ['Estructura', el.querySelector(`#cam_${i}_estructura`)?.value || '—'],
-      ['Ubicación confirmada', el.querySelector(`#cam_${i}_chkUbic`)?.checked ? 'Sí':'No'],
-      ['Revisión con imagen satelital', el.querySelector(`#cam_${i}_chkSat`)?.checked ? 'Sí':'No'],
-      ['Herramientas básicas presentes', el.querySelector(`#cam_${i}_chkHerr`)?.checked ? 'Sí':'No'],
+    // ===== Cámaras dinámicas (token estable) =====
+    const camList = $('#camList');
+    const modelos = [
+      'HIKVISION DOMO PRO SOLAR',
+      'HIKVISION DOMO COLORVU SOLAR',
+      'HIKVISION FIJA SOLAR',
+      'HIKVISION FIJA HOGAREÑA'
     ];
-    doc.autoTable({
-      startY:y0, head:[['A0) Parámetros técnicos','Valor']], body:A0, theme:'grid',
-      styles:{ fontSize:9.5, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] },
-      margin:{ left:M, right:M }
-    });
-    y0 = doc.lastAutoTable.finalY + 8;
 
-    // Datos de cámara (con NA)
-    const modemNA = el.querySelector(`#cam_${i}_modem_na`)?.checked;
-    const modemVal = el.querySelector(`[name="cam_${i}_modem"]`)?.value || '';
-    const radioNA = el.querySelector(`#cam_${i}_radio_na`)?.checked;
-    const radioVal = el.querySelector(`[name="cam_${i}_radio"]`)?.value || '';
-
-    const body = [
-      ['Modelo', el.querySelector(`[name="cam_${i}_modelo"]`)?.value || ''],
-      ['Serie', el.querySelector(`[name="cam_${i}_serie"]`)?.value || ''],
-      ['Tipo de conexión', el.querySelector(`[name="cam_${i}_conexion"]`)?.value || ''],
-      ['Módem (marca/modelo)', modemNA ? 'No aplica' : modemVal],
-      ['Operador/APN', `${el.querySelector('[name$="_operador"]')?.value || ''} / ${el.querySelector('[name$="_apn"]')?.value || ''}`],
-      ['Señal (dBm)', el.querySelector('[name$="_rssi"]')?.value || ''],
-      ['Velocidad', el.querySelector('[name$="_vel"]')?.value || ''],
-      ['Potencia radioenlace (dBm)', radioNA ? 'No aplica' : (radioVal || '')],
-      ['Tensión (V)', el.querySelector('[name$="_volt"]')?.value || ''],
-      ['Lat/Lon (GMS)', `${el.querySelector('[name$="_latGms"]')?.value || ''} , ${el.querySelector('[name$="_lonGms"]')?.value || ''}`]
-    ];
-    doc.autoTable({
-      startY: y0,
-      body, theme:'plain',
-      styles:{ fontSize:10, cellPadding:3 },
-      margin:{ left:M, right:M }
-    });
-    y0 = doc.lastAutoTable.finalY + 8;
-
-    // Pruebas
-    const tests = [
-      ['Vista en vivo', el.querySelector(`#cam_${i}_t_vivo`)?.checked ? 'Sí':'No'],
-      ['Notificaciones en la app del cliente', el.querySelector(`#cam_${i}_t_noti`)?.checked ? 'Sí':'No'],
-      ['Micro SD grabando', el.querySelector(`#cam_${i}_t_sd`)?.checked ? 'Sí':'No'],
-      ['Eventos / movimientos', el.querySelector(`#cam_${i}_t_evt`)?.checked ? 'Sí':'No'],
-      ['Carga del panel solar', el.querySelector(`#cam_${i}_t_panel`)?.checked ? 'Sí':'No'],
-    ];
-    doc.autoTable({
-      startY:y0,
-      head:[['Prueba','OK']], body:tests, theme:'grid',
-      styles:{ fontSize:10, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] },
-      margin:{ left:M, right:M }
-    });
-    y0 = doc.lastAutoTable.finalY + 10;
-
-    // Fotos (solo 6)
-    const keys = ['Poste','Vivo','Carga','Fij','Senal','CamPoste'];
-    const items=[];
-    for(const k of keys){
-      const sel = `#cam_${i}_${k}`;
-      const inp = el.querySelector(sel);
-      const f = inp?.files?.[0];
-      if(!f) continue;
-      const data = await readImageAsDataURL(f, 420, .82);
-      items.push({data, caption: inp.dataset.caption});
-    }
-    if(items.length){
-      doc.setFont('helvetica','bold'); doc.setFontSize(11);
-      doc.text('Fotos', M, y0); y0 += 6;
-
-      const size=110, gap=10; let x=M, rowH=size+22;
-      for(const it of items){
-        if(x+size>pageW-M){ x=M; y0+=rowH; }
-        if(y0+size+18>pageH-M){ 
-          // cerrar marco antes de pasar de página
-          const blockY = y + 2;
-          const blockH = (y0 - y) + 10;
-          doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
-          doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
-          doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
-          doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
-
-          doc.addPage(); y = M; y0 = y + blockTopPadding;
-          doc.setFont('helvetica','bold'); doc.setFontSize(12);
-          doc.text(`Cámara #${i+1} (cont.)`, M, y0); y0 += 12;
-          doc.setFont('helvetica','bold'); doc.setFontSize(11);
-          doc.text('Fotos (cont.)', M, y0); y0 += 6;
-          x = M;
+    function bindNA(chk, input){
+      if(!chk || !input) return;
+      const apply=()=>{
+        if(chk.checked){
+          input.disabled=true; input.classList.add('na-disabled');
+          if(!input.dataset.prevPlaceholder) input.dataset.prevPlaceholder=input.placeholder||'';
+          input.placeholder='No aplica'; input.value='';
+        }else{
+          input.disabled=false; input.classList.remove('na-disabled');
+          input.placeholder=input.dataset.prevPlaceholder||'';
         }
-        doc.addImage(it.data, 'JPEG', x, y0, size, size);
-        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
-        doc.text(doc.splitTextToSize(it.caption, size), x, y0+size+12);
-        x+=size+gap;
-      }
-      y0 += rowH;
+      };
+      chk.addEventListener('change', apply); apply();
     }
 
-    // Marco del bloque de la cámara
-    const blockY = y + 2;
-    const blockH = (y0 - y) + 8;
-    doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
-    doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
-    doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
-    doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
+    // Defaults de APN/cred por operador
+    function opDefaults(op){
+      switch(op){
+        case 'Movistar':    return { apn: 'internet.gprs.unifon.com.ar', user: '',         pass: ''         };
+        case 'Claro':       return { apn: 'igprs.claro.com.ar',          user: 'INTERNET', pass: 'INTERNET' };
+        case 'SIM MANAGER': return { apn: 'wingtp.personal.com',         user: '',         pass: ''         };
+        default:            return { apn: '',                            user: '',         pass: ''         };
+      }
+    }
 
-    y = blockY + blockH + 12;
-  }
+    function planChunk(id){
+      return `
+      <div class="block">
+        <div class="subttl">A0) Parámetros técnicos</div>
+        <div class="grid">
+          <div class="field">
+            <label for="${id}_tipo">Tipo de trabajo <span class="req">*</span></label>
+            <select id="${id}_tipo" name="${id}_tipo" required>
+              <option value="">— Elegí —</option>
+              <option value="A1">A1 — Instalación cámaras nuevas</option>
+              <option value="A2">A2 — Instalación cámaras viejas</option>
+              <option value="A3">A3 — Soporte cámaras nuevas</option>
+              <option value="A4">A4 — Soporte cámaras viejas</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="${id}_estructura">Estructura</label>
+            <select id="${id}_estructura" name="${id}_estructura">
+              <option value="">— Elegí —</option>
+              <option>Torre</option><option>Poste</option><option>Columna</option><option>Techo</option>
+            </select>
+          </div>
+        </div>
 
-  // Observaciones generales
-  if (y>pageH-200){ doc.addPage(); y=M; }
-  doc.setFont('helvetica','bold'); doc.setFontSize(12);
-  doc.text('Observaciones generales', M, y); y+=12;
-  doc.setFont('helvetica','normal'); doc.setFontSize(10);
-  doc.text(doc.splitTextToSize($('#obs').value||'—', pageW-2*M), M, y);
-  y += 36;
+        <div class="grid-3 checkgrid">
+          <label class="check"><input type="checkbox" id="${id}_chkUbic"/> <span>Ubicación confirmada</span></label>
+          <label class="check"><input type="checkbox" id="${id}_chkSat"/> <span>Revisión con imagen satelital</span></label>
+          <label class="check"><input type="checkbox" id="${id}_chkHerr"/> <span>Herramientas básicas presentes</span></label>
+        </div>
+      </div>`;
+    }
 
-  // Calidad y seguridad
-  doc.setFont('helvetica','bold'); doc.setFontSize(12);
-  doc.text('Calidad y seguridad', M, y); y+=10;
-  const qual = [
-    ['Conexiones y cableado OK', $('#okCableado').checked?'Sí':'No'],
-    ['Montura verificada', $('#okMontura').checked?'Sí':'No'],
-    ['Protección contra cotorras', $('#okCotorra').checked?'Sí':'No'],
-  ];
-  doc.autoTable({ startY:y, body:qual, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
-  y = doc.lastAutoTable.finalY + 18;
+    function photoChunk(id){
+      const items = [
+        ['Poste','Poste'],
+        ['Vivo','Vista en vivo desde PC/celular'],
+        ['Carga','Carga del panel solar'],
+        ['Fij','Cámara instalada en poste — fijaciones (vista posterior)'],
+        ['Senal','Nivel de señal'],
+        ['CamPoste','Cámara y poste — vista completa']
+      ];
+      return `
+      <div class="photo-grid">
+        ${items.map(([k,txt])=>`
+          <div class="photo-cell">
+            <div class="u">
+              <input id="${id}_${k}" class="foto-labeled" type="file" accept="image/*" capture="environment" data-caption="${txt}"/>
+              <label for="${id}_${k}">📷 ${txt}</label>
+            </div>
+            <small class="ph-caption">${txt}</small>
+          </div>
+        `).join('')}
+      </div>`;
+    }
 
-  // Cierre técnico
-  if (y>pageH-180){ doc.addPage(); y=M; }
-  doc.setFont('helvetica','bold'); doc.setFontSize(12);
-  doc.text('Cierre del técnico', M, y); y+=10;
+    function testsChunk(id){
+      return `
+      <div class="grid-3">
+        <label class="check"><input type="checkbox" id="${id}_t_vivo"/> <span>Vista en vivo</span></label>
+        <label class="check"><input type="checkbox" id="${id}_t_noti"/> <span>Notificaciones en la app del cliente</span></label>
+        <label class="check"><input type="checkbox" id="${id}_t_sd"/> <span>Micro SD grabando</span></label>
+        <label class="check"><input type="checkbox" id="${id}_t_evt"/> <span>Eventos / movimientos</span></label>
+        <label class="check"><input type="checkbox" id="${id}_t_panel"/> <span>Carga del panel solar</span></label>
+      </div>`;
+    }
+    function camCard(){
+      const token = (crypto?.randomUUID?.() || ('id'+Date.now()+Math.random())).slice(0,8);
+      const id = `cam_${token}`;
+      const el = document.createElement('div');
+      el.className = 'cam-card';
+      el.dataset.cam = id;
+      el.innerHTML = `
+        <div class="cam-head">
+          <h3 class="cam-title">Cámara</h3>
+          <button class="cam-remove" type="button">Eliminar</button>
+        </div>
 
-  const sig = $('#canvasFirm'); const dni = $('#dniTec').value||'';
-  const hIni = $('#horaIni').value||''; const hFin = $('#horaFin').value||'';
-  const horaConf = $('#horaConf').value||''; const validador = $('#validador').value||'';
-  if(sig){
-    const data = sig.toDataURL('image/png');
-    doc.addImage(data,'PNG',M,y,220,110);
-    doc.setFont('helvetica','normal'); doc.setFontSize(10);
-    doc.text(`DNI: ${dni}`, M+240, y+24);
-    doc.text(`Hora inicio: ${hIni}`, M+240, y+44);
-    doc.text(`Hora fin: ${hFin}`, M+240, y+64);
-    doc.text(`Confirmación oficina: ${$('#confOficina').checked?'Sí':'No'}`, M+240, y+84);
-    if(horaConf) doc.text(`Hora confirmación: ${horaConf}`, M+240, y+104);
-    if(validador) doc.text(`Validador: ${validador}`, M+240, y+124);
-    y += 120;
-  }
+        ${planChunk(id)}
 
-  // Footer
-  doc.setDrawColor(229,231,235); doc.line(M, pageH-48, pageW-M, pageH-48);
-  doc.setFontSize(9.5); doc.text(`Generado — ${new Date().toLocaleString()}`, M, pageH - 34);
+        <!-- Datos básicos -->
+        <div class="grid">
+          <div class="field">
+            <label>Modelo</label>
+            <select name="${id}_modelo">
+              ${modelos.map(m=>`<option>${m}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>N° de serie</label>
+            <input type="text" name="${id}_serie" class="mono"/>
+          </div>
+        </div>
 
-  const fname = `parte-instalacion-${$('#fechaInst').value || new Date().toISOString().slice(0,10)}.pdf`;
-  doc.save(fname);
-}
+        <div class="grid">
+          <div class="field">
+            <label>Tipo de conexión</label>
+            <select name="${id}_conexion">
+              <option value="">— Elegí —</option>
+              <option>Solar</option><option>220 V</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="label-row">
+              <label>Marca y modelo del módem</label>
+              <label class="na"><input type="checkbox" id="${id}_modem_na"/> No aplica</label>
+            </div>
+            <input type="text" name="${id}_modem" placeholder="p.ej. Huawei B311…"/>
+          </div>
+        </div>
 
-// ===== Acciones
-$('#btnEnviar')?.addEventListener('click', async ()=>{
-  const form = $('#formInstalacion');
-  if (!form.checkValidity()){ form.reportValidity(); return msg('err','Completá los campos requeridos.'); }
-  if (!validarPrevios()) return;
+        <!-- Ubicación y conectividad -->
+        <div class="block">
+          <div class="subttl">Ubicación y conectividad</div>
+          <div class="grid-3">
+            <div class="field">
+              <label>Operador SIM</label>
+              <select name="${id}_operador">
+                <option value="">— Elegí —</option>
+                <option>Movistar</option>
+                <option>Claro</option>
+                <option>SIM MANAGER</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>APN configurado</label>
+              <input type="text" name="${id}_apn" placeholder="APN"/>
+            </div>
+            <div class="field">
+              <label>Usuario APN</label>
+              <input type="text" name="${id}_apn_user" placeholder="Usuario (si aplica)"/>
+            </div>
+            <div class="field">
+              <label>Password APN</label>
+              <input type="text" name="${id}_apn_pass" placeholder="Password (si aplica)"/>
+            </div>
+            <div class="field">
+              <label>Señal (dBm)</label>
+              <input type="text" name="${id}_rssi" placeholder="-75 / -100"/>
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label>Velocidad (Mbps up/down)</label>
+                <label class="na"><input type="checkbox" id="${id}_vel_na"/> No aplica</label>
+              </div>
+              <input type="text" name="${id}_vel" placeholder="ej: 8 / 3"/>
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label>Potencia radioenlace (dBm)</label>
+                <label class="na"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
+              </div>
+              <input type="text" name="${id}_radio" placeholder="ej: -60"/>
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label>Tensión (V)</label>
+                <label class="na"><input type="checkbox" id="${id}_volt_na"/> No aplica</label>
+              </div>
+              <input type="text" name="${id}_volt" placeholder="ej: 12.0"/>
+            </div>
+          </div>
 
-  try{ await generarPDF(); msg('ok','Formulario exportado como PDF.'); }
-  catch(e){ console.error(e); msg('err','No se pudo generar el PDF.'); }
-});
-$('#btnReset')?.addEventListener('click', ()=> msg('', ''));
+          <div class="grid">
+            <div class="field">
+              <label>Latitud (GMS)</label>
+              <input type="text" name="${id}_latGms" placeholder='ej: 38°24′51.8″ S'/>
+            </div>
+            <div class="field">
+              <label>Longitud (GMS)</label>
+              <input type="text" name="${id}_lonGms" placeholder='ej: 61°06′30.2″ W'/>
+            </div>
+          </div>
 
+          <div class="actions">
+            <button class="btn" type="button" data-act="geo">Usar mi ubicación</button>
+          </div>
+        </div>
+
+        <!-- Pruebas por cámara -->
+        <div class="block">
+          <div class="subttl">Pruebas y validaciones</div>
+          ${testsChunk(id)}
+        </div>
+
+        <!-- Fotos por cámara -->
+        <div class="block">
+          <div class="subttl">Fotos</div>
+          ${photoChunk(id)}
+        </div>
+      `;
+
+      // Eventos internos
+      el.querySelector('.cam-remove').addEventListener('click', ()=>{ el.remove(); renumCams(); saveDraft(); });
+
+      // Binds de NA
+      bindNA(el.querySelector(`#${id}_modem_na`), el.querySelector(`[name="${id}_modem"]`));
+      bindNA(el.querySelector(`#${id}_radio_na`), el.querySelector(`[name="${id}_radio"]`));
+      bindNA(el.querySelector(`#${id}_vel_na`),   el.querySelector(`[name="${id}_vel"]`));
+      bindNA(el.querySelector(`#${id}_volt_na`),  el.querySelector(`[name="${id}_volt"]`));
+
+      // Defaults por operador
+      const selOp = el.querySelector(`[name="${id}_operador"]`);
+      const apn   = el.querySelector(`[name="${id}_apn"]`);
+      const apnU  = el.querySelector(`[name="${id}_apn_user"]`);
+      const apnP  = el.querySelector(`[name="${id}_apn_pass"]`);
+      selOp.addEventListener('change', ()=>{
+        const d = opDefaults(selOp.value);
+        apn.value = d.apn; apnU.value = d.user; apnP.value = d.pass; saveDraftThrottled();
+      });
+
+      // Geolocalización
+      el.querySelector('[data-act="geo"]').addEventListener('click', async ()=>{
+        const opts = { enableHighAccuracy:true, timeout:15000, maximumAge:0 };
+        const apply = ({coords})=>{
+          el.querySelector(`[name="${id}_latGms"]`).value = toDMS(coords.latitude,true);
+          el.querySelector(`[name="${id}_lonGms"]`).value = toDMS(coords.longitude,false);
+          msg('ok','Ubicación aplicada a la cámara.'); saveDraftThrottled();
+        };
+        try {
+          if (navigator.permissions && navigator.permissions.query) {
+            try { const st = await navigator.permissions.query({name:'geolocation'}); if (st.state === 'denied') { msg('err','Permiso de ubicación denegado. Activalo en el navegador.'); return; } } catch {}
+          }
+          if (!('geolocation' in navigator)) { msg('err','Geolocalización no disponible en este dispositivo.'); return; }
+          navigator.geolocation.getCurrentPosition(apply, (err)=>{ msg('err','No se pudo obtener la ubicación ('+err.code+'). Verificá permisos/HTTPS.'); }, opts);
+        } catch { msg('err','No se pudo obtener la ubicación.'); }
+      });
+
+      // Título incremental y autosave por cambios
+      const num = $$('.cam-card', camList).length + 1;
+      el.querySelector('.cam-title').textContent = `Cámara #${num}`;
+      el.addEventListener('input', saveDraftThrottled);
+
+      return el;
+    }
+
+    function renumCams(){ $$('.cam-card', camList).forEach((el,i)=> el.querySelector('.cam-title').textContent = `Cámara #${i+1}`); }
+    function addCam(){ camList.appendChild(camCard()); saveDraft(); }
+    $('#btnAddCam')?.addEventListener('click', addCam);
+
+    // ===== Mensajes UI
+    const formMsg=$('#formMsg');
+    function msg(kind, text){
+      formMsg.classList.remove('ok','err');
+      if(kind) formMsg.classList.add(kind);
+      formMsg.textContent = text || '';
+    }
+
+    // ===== Imagen helper
+    function readImageAsDataURL(file, maxW=720, quality=.8){
+      return new Promise(resolve=>{
+        if(!file) return resolve(null);
+        const img=new Image(), fr=new FileReader();
+        fr.onload=()=> img.src=fr.result;
+        img.onload=()=>{
+          const scale=Math.min(1,maxW/img.width);
+          const c=document.createElement('canvas'); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+          resolve(c.toDataURL('image/jpeg',quality));
+        };
+        fr.readAsDataURL(file);
+      });
+    }
+
+    // ===== Validaciones (escopadas por card)
+    function validarPrevios(){
+      const cards = $$('.cam-card', camList);
+      if(!cards.length){ msg('err','Agregá al menos una cámara.'); return false; }
+
+      $$('.invalid').forEach(n=>n.classList.remove('invalid'));
+
+      for (const el of cards){
+        const id = el.dataset.cam;
+        const tipo = el.querySelector(`#${id}_tipo`)?.value;
+        const ub = el.querySelector(`#${id}_chkUbic`)?.checked;
+        const sat = el.querySelector(`#${id}_chkSat`)?.checked;
+        if(!tipo){ el.querySelector(`#${id}_tipo`).classList.add('invalid'); msg('err',`Seleccioná Tipo de trabajo en ${el.querySelector('.cam-title').textContent}.`); return false; }
+        if(!ub || !sat){ msg('err',`Confirmá Ubicación e imagen satelital en ${el.querySelector('.cam-title').textContent}.`); return false; }
+
+        const conexion = el.querySelector(`[name="${id}_conexion"]`)?.value || '';
+        const voltNA = el.querySelector(`#${id}_volt_na`)?.checked;
+        const voltVal = el.querySelector(`[name="${id}_volt"]`)?.value.trim();
+        const radioNA = el.querySelector(`#${id}_radio_na`)?.checked;
+        const radioVal = el.querySelector(`[name="${id}_radio"]`)?.value.trim();
+
+        // A2/A4: Tensión obligatoria (salvo NA) + Potencia (salvo NA)
+        if(['A2','A4'].includes(tipo)){
+          if(!voltNA && !voltVal){ el.querySelector(`[name="${id}_volt"]`).classList.add('invalid'); msg('err',`Para ${tipo}, completá Tensión (o marcá NA) en ${el.querySelector('.cam-title').textContent}.`); return false; }
+          if(!radioNA && !radioVal){ el.querySelector(`[name="${id}_radio"]`).classList.add('invalid'); msg('err',`Para ${tipo}, completá Potencia radioenlace (o NA) en ${el.querySelector('.cam-title').textContent}.`); return false; }
+        }
+        // Conexión 220 V => Tensión obligatoria salvo NA
+        if(conexion==='220 V' && !voltNA && !voltVal){
+          el.querySelector(`[name="${id}_volt"]`).classList.add('invalid');
+          msg('err',`Con 220 V, Tensión es obligatoria (o marcá NA) en ${el.querySelector('.cam-title').textContent}.`);
+          return false;
+        }
+      }
+
+      if(!$('#confOficina').checked){ msg('err','No podés cerrar sin confirmación de Oficina (visibilidad remota).'); return false; }
+      return true;
+    }
+
+    // ===== PDF =====
+    async function generarPDF(){
+      const { jsPDF } = window.jspdf || {}; if(!jsPDF) throw new Error('jsPDF no cargado');
+      const doc = new jsPDF({ unit:'pt', format:'a4' });
+      const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
+      const M=56; let y=M;
+
+      // Encabezado (sin cambios grandes — omitimos propuesta 3)
+      doc.setFont('helvetica','bold'); doc.setFontSize(15);
+      doc.text('Agronomía Inteligente SRL — Parte de instalación', M, y); y+=22;
+      doc.setDrawColor(245,158,11); doc.setLineWidth(2); doc.line(M,y,pageW-M,y); y+=16;
+
+      // A) Datos del servicio
+      const A = [
+        ['Cliente', $('#cliNombre').value||''], ['Teléfono', $('#cliTel').value||''],
+        ['Dirección', $('#cliDireccion').value||''], ['Ciudad/Prov.', $('#cliCiudad').value||''],
+        ['Técnico', $('#tecNombre').value||''], ['Fecha', $('#fechaInst').value||'']
+      ];
+      doc.autoTable({ startY:y, head:[['A) Datos del servicio','Valor']], body:A, theme:'grid',
+        styles:{ fontSize:9.5, cellPadding:5 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
+      y = doc.lastAutoTable.finalY + 12;
+
+      // Cámaras
+      for (const [i,el] of $$('.cam-card', camList).entries()) {
+        if(y>pageH-280){ doc.addPage(); y=M; }
+        const blockX = M-6, blockW = pageW - 2*M + 12;
+        const blockTopPadding = 18;
+        let y0 = y + blockTopPadding;
+
+        // Título
+        doc.setFont('helvetica','bold'); doc.setFontSize(12);
+        doc.text(`${el.querySelector('.cam-title').textContent}`, M, y0); y0 += 12;
+
+        const id = el.dataset.cam;
+
+        // A0 por cámara
+        const A0 = [
+          ['Tipo de trabajo', el.querySelector(`#${id}_tipo`)?.value || '—'],
+          ['Estructura', el.querySelector(`#${id}_estructura`)?.value || '—'],
+          ['Ubicación confirmada', el.querySelector(`#${id}_chkUbic`)?.checked ? 'Sí':'No'],
+          ['Revisión con imagen satelital', el.querySelector(`#${id}_chkSat`)?.checked ? 'Sí':'No'],
+          ['Herramientas básicas presentes', el.querySelector(`#${id}_chkHerr`)?.checked ? 'Sí':'No'],
+        ];
+        doc.autoTable({
+          startY:y0, head:[['A0) Parámetros técnicos','Valor']], body:A0, theme:'grid',
+          styles:{ fontSize:9.5, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] },
+          margin:{ left:M, right:M }
+        });
+        y0 = doc.lastAutoTable.finalY + 8;
+
+        // Datos de cámara (con NA en tensión y velocidad)
+        const modemNA = el.querySelector(`#${id}_modem_na`)?.checked;
+        const modemVal = el.querySelector(`[name="${id}_modem"]`)?.value || '';
+        const radioNA = el.querySelector(`#${id}_radio_na`)?.checked;
+        const radioVal = el.querySelector(`[name="${id}_radio"]`)?.value || '';
+        const voltNA  = el.querySelector(`#${id}_volt_na`)?.checked;
+        const voltVal = el.querySelector(`[name="${id}_volt"]`)?.value || '';
+        const velNA   = el.querySelector(`#${id}_vel_na`)?.checked;
+        const velVal  = el.querySelector(`[name="${id}_vel"]`)?.value || '';
+
+        const op   = el.querySelector(`[name="${id}_operador"]`)?.value || '';
+        const apn  = el.querySelector(`[name="${id}_apn"]`)?.value || '';
+        const apnU = el.querySelector(`[name="${id}_apn_user"]`)?.value || '';
+        const apnP = el.querySelector(`[name="${id}_apn_pass"]`)?.value || '';
+
+        const body = [
+          ['Modelo', el.querySelector(`[name="${id}_modelo"]`)?.value || ''],
+          ['Serie', el.querySelector(`[name="${id}_serie"]`)?.value || ''],
+          ['Tipo de conexión', el.querySelector(`[name="${id}_conexion"]`)?.value || ''],
+          ['Módem (marca/modelo)', modemNA ? 'No aplica' : modemVal],
+          ['Operador', op || ''],
+          ['APN', apn || ''],
+          ['APN usuario/password', (apnU||apnP) ? `${apnU} / ${apnP}` : '—'],
+          ['Señal (dBm)', el.querySelector(`[name="${id}_rssi"]`)?.value || ''],
+          ['Velocidad', velNA ? 'No aplica' : (velVal || '')],
+          ['Potencia radioenlace (dBm)', radioNA ? 'No aplica' : (radioVal || '')],
+          ['Tensión (V)', voltNA ? 'No aplica' : (voltVal || '')],
+          ['Lat/Lon (GMS)', `${el.querySelector(`[name="${id}_latGms"]`)?.value || ''} , ${el.querySelector(`[name="${id}_lonGms"]`)?.value || ''}`]
+        ];
+        doc.autoTable({ startY: y0, body, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
+        y0 = doc.lastAutoTable.finalY + 8;
+
+        // Pruebas
+        const tests = [
+          ['Vista en vivo', el.querySelector(`#${id}_t_vivo`)?.checked ? 'Sí':'No'],
+          ['Notificaciones en la app del cliente', el.querySelector(`#${id}_t_noti`)?.checked ? 'Sí':'No'],
+          ['Micro SD grabando', el.querySelector(`#${id}_t_sd`)?.checked ? 'Sí':'No'],
+          ['Eventos / movimientos', el.querySelector(`#${id}_t_evt`)?.checked ? 'Sí':'No'],
+          ['Carga del panel solar', el.querySelector(`#${id}_t_panel`)?.checked ? 'Sí':'No'],
+        ];
+        doc.autoTable({ startY:y0, head:[['Prueba','OK']], body:tests, theme:'grid', styles:{ fontSize:10, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
+        y0 = doc.lastAutoTable.finalY + 10;
+
+        // Fotos
+        const keys = ['Poste','Vivo','Carga','Fij','Senal','CamPoste'];
+        const items=[];
+        for(const k of keys){
+          const inp = el.querySelector(`#${id}_${k}`);
+          const f = inp?.files?.[0];
+          if(!f) continue;
+          const data = await readImageAsDataURL(f, 420, .82);
+          items.push({data, caption: inp.dataset.caption});
+        }
+        if(items.length){
+          doc.setFont('helvetica','bold'); doc.setFontSize(11);
+          doc.text('Fotos', M, y0); y0 += 6;
+
+          const size=110, gap=10; let x=M, rowH=size+22;
+          for(const it of items){
+            if(x+size>pageW-M){ x=M; y0+=rowH; }
+            if(y0+size+18>pageH-M){
+              const blockY = y + 2;
+              const blockH = (y0 - y) + 10;
+              doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
+              doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
+              doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
+              doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
+
+              doc.addPage(); y = M; y0 = y + blockTopPadding;
+              doc.setFont('helvetica','bold'); doc.setFontSize(12);
+              doc.text(`${el.querySelector('.cam-title').textContent} (cont.)`, M, y0); y0 += 12;
+              doc.setFont('helvetica','bold'); doc.setFontSize(11);
+              doc.text('Fotos (cont.)', M, y0); y0 += 6; x = M;
+            }
+            doc.addImage(it.data, 'JPEG', x, y0, size, size);
+            doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+            doc.text(doc.splitTextToSize(it.caption, size), x, y0+size+12);
+            x+=size+gap;
+          }
+          y0 += rowH;
+        }
+
+        // Marco del bloque de la cámara
+        const blockY = y + 2;
+        const blockH = (y0 - y) + 8;
+        doc.setLineWidth(0.8); doc.setDrawColor(0,0,0);
+        doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
+        doc.setLineWidth(0.6); doc.setDrawColor(245,158,11);
+        doc.roundedRect(blockX+2, blockY+2, blockW-4, blockH-4, 3, 3, 'S');
+
+        y = blockY + blockH + 12;
+      }
+
+      // Observaciones generales
+      if (y>pageH-200){ doc.addPage(); y=M; }
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      doc.text('Observaciones generales', M, y); y+=12;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(doc.splitTextToSize($('#obs').value||'—', pageW-2*M), M, y);
+      y += 36;
+
+      // Calidad y seguridad
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      doc.text('Calidad y seguridad', M, y); y+=10;
+      const qual = [
+        ['Conexiones y cableado OK', $('#okCableado').checked?'Sí':'No'],
+        ['Montura verificada', $('#okMontura').checked?'Sí':'No'],
+        ['Protección contra cotorras', $('#okCotorra').checked?'Sí':'No'],
+      ];
+      doc.autoTable({ startY:y, body:qual, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
+      y = doc.lastAutoTable.finalY + 18;
+
+      // Cierre técnico
+      if (y>pageH-180){ doc.addPage(); y=M; }
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      doc.text('Cierre del técnico', M, y); y+=10;
+
+      const sig = $('#canvasFirm'); const dni = $('#dniTec').value||'';
+      const hIni = $('#horaIni').value||''; const hFin = $('#horaFin').value||'';
+      const horaConf = $('#horaConf').value||''; const validador = $('#validador').value||'';
+      if(sig){
+        const data = sig.toDataURL('image/png');
+        doc.addImage(data,'PNG',M,y,220,110);
+        doc.setFont('helvetica','normal'); doc.setFontSize(10);
+        doc.text(`DNI: ${dni}`, M+240, y+24);
+        doc.text(`Hora inicio: ${hIni}`, M+240, y+44);
+        doc.text(`Hora fin: ${hFin}`, M+240, y+64);
+        doc.text(`Confirmación oficina: ${$('#confOficina').checked?'Sí':'No'}`, M+240, y+84);
+        if(horaConf) doc.text(`Hora confirmación: ${horaConf}`, M+240, y+104);
+        if(validador) doc.text(`Validador: ${validador}`, M+240, y+124);
+      }
+
+      // Footer (simple)
+      doc.setDrawColor(229,231,235); doc.line(M, pageH-48, pageW-M, pageH-48);
+      doc.setFontSize(9.5); doc.text(`Generado — ${new Date().toLocaleString()}`, M, pageH - 34);
+
+      const fname = `parte-instalacion-${$('#fechaInst').value || new Date().toISOString().slice(0,10)}.pdf`;
+      doc.save(fname);
+    }
+    // ===== Autosave / Restore =====
+    function serialize(){
+      const data = {
+        A: {
+          cliNombre: $('#cliNombre').value,
+          cliTel: $('#cliTel').value,
+          cliDireccion: $('#cliDireccion').value,
+          cliCiudad: $('#cliCiudad').value,
+          tecNombre: $('#tecNombre').value,
+          fechaInst: $('#fechaInst').value
+        },
+        C: {
+          obs: $('#obs').value,
+          okCableado: $('#okCableado').checked,
+          okMontura: $('#okMontura').checked,
+          okCotorra: $('#okCotorra').checked
+        },
+        D: {
+          dni: $('#dniTec').value,
+          horaIni: $('#horaIni').value,
+          horaFin: $('#horaFin').value,
+          conf: $('#confOficina').checked,
+          horaConf: $('#horaConf').value,
+          validador: $('#validador').value
+        },
+        cams: $$('.cam-card', camList).map(el=>{
+          const id = el.dataset.cam;
+          const pick = n=> el.querySelector(`[name="${id}_${n}"]`);
+          const chk  = s=> el.querySelector(`#${id}_${s}`)?.checked || false;
+          return {
+            id,
+            tipo:      el.querySelector(`#${id}_tipo`)?.value || '',
+            estructura:el.querySelector(`#${id}_estructura`)?.value || '',
+            chkUbic:   chk('chkUbic'),
+            chkSat:    chk('chkSat'),
+            chkHerr:   chk('chkHerr'),
+            modelo:    pick('modelo')?.value || '',
+            serie:     pick('serie')?.value || '',
+            conexion:  pick('conexion')?.value || '',
+            modem_na:  chk('modem_na'),
+            modem:     pick('modem')?.value || '',
+            operador:  pick('operador')?.value || '',
+            apn:       pick('apn')?.value || '',
+            apn_user:  pick('apn_user')?.value || '',
+            apn_pass:  pick('apn_pass')?.value || '',
+            rssi:      pick('rssi')?.value || '',
+            vel_na:    chk('vel_na'),
+            vel:       pick('vel')?.value || '',
+            radio_na:  chk('radio_na'),
+            radio:     pick('radio')?.value || '',
+            volt_na:   chk('volt_na'),
+            volt:      pick('volt')?.value || '',
+            latGms:    pick('latGms')?.value || '',
+            lonGms:    pick('lonGms')?.value || ''
+          };
+        })
+      };
+      return data;
+    }
+
+    function deserialize(data){
+      if(!data) return;
+
+      // A
+      $('#cliNombre').value = data?.A?.cliNombre || '';
+      $('#cliTel').value = data?.A?.cliTel || '';
+      $('#cliDireccion').value = data?.A?.cliDireccion || '';
+      $('#cliCiudad').value = data?.A?.cliCiudad || '';
+      $('#tecNombre').value = data?.A?.tecNombre || '';
+      $('#fechaInst').value = data?.A?.fechaInst || '';
+
+      // C
+      $('#obs').value = data?.C?.obs || '';
+      $('#okCableado').checked = !!data?.C?.okCableado;
+      $('#okMontura').checked  = !!data?.C?.okMontura;
+      $('#okCotorra').checked  = !!data?.C?.okCotorra;
+
+      // D
+      $('#dniTec').value = data?.D?.dni || '';
+      $('#horaIni').value = data?.D?.horaIni || '';
+      $('#horaFin').value = data?.D?.horaFin || '';
+      $('#confOficina').checked = !!data?.D?.conf;
+      $('#horaConf').value = data?.D?.horaConf || '';
+      $('#validador').value = data?.D?.validador || '';
+
+      // Cámaras
+      camList.innerHTML = '';
+      (data.cams || []).forEach(c=>{
+        const el = camCard();
+        const id = el.dataset.cam;
+
+        el.querySelector(`#${id}_tipo`).value = c.tipo;
+        el.querySelector(`#${id}_estructura`).value = c.estructura;
+        el.querySelector(`#${id}_chkUbic`).checked = !!c.chkUbic;
+        el.querySelector(`#${id}_chkSat`).checked  = !!c.chkSat;
+        el.querySelector(`#${id}_chkHerr`).checked = !!c.chkHerr;
+
+        el.querySelector(`[name="${id}_modelo"]`).value = c.modelo;
+        el.querySelector(`[name="${id}_serie"]`).value  = c.serie;
+        el.querySelector(`[name="${id}_conexion"]`).value = c.conexion;
+
+        el.querySelector(`#${id}_modem_na`).checked = !!c.modem_na;
+        el.querySelector(`[name="${id}_modem"]`).value = c.modem;
+
+        el.querySelector(`[name="${id}_operador"]`).value = c.operador;
+        el.querySelector(`[name="${id}_apn"]`).value      = c.apn;
+        el.querySelector(`[name="${id}_apn_user"]`).value = c.apn_user;
+        el.querySelector(`[name="${id}_apn_pass"]`).value = c.apn_pass;
+
+        el.querySelector(`[name="${id}_rssi"]`).value = c.rssi;
+
+        el.querySelector(`#${id}_vel_na`).checked = !!c.vel_na;
+        el.querySelector(`[name="${id}_vel"]`).value = c.vel;
+
+        el.querySelector(`#${id}_radio_na`).checked = !!c.radio_na;
+        el.querySelector(`[name="${id}_radio"]`).value = c.radio;
+
+        el.querySelector(`#${id}_volt_na`).checked = !!c.volt_na;
+        el.querySelector(`[name="${id}_volt"]`).value = c.volt;
+
+        el.querySelector(`[name="${id}_latGms"]`).value = c.latGms;
+        el.querySelector(`[name="${id}_lonGms"]`).value = c.lonGms;
+
+        camList.appendChild(el);
+      });
+      renumCams();
+    }
+
+    function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(serialize())); }
+    const saveDraftThrottled = throttle(saveDraft, 800);
+
+    function restoreDraft(){
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if(!raw) return;
+      try { deserialize(JSON.parse(raw)); } catch {}
+    }
+
+    // Restaurar si hay, o crear una card por defecto
+    restoreDraft();
+    if(!$$('.cam-card').length) addCam();
+
+    // ===== Acciones =====
+    $('#btnEnviar')?.addEventListener('click', async ()=>{
+      const form = $('#formInstalacion');
+      if (!form.checkValidity()){
+        form.reportValidity();
+        return msg('err','Completá los campos requeridos.');
+      }
+      if (!validarPrevios()) return;
+
+      try{
+        await generarPDF();
+        msg('ok','Formulario exportado como PDF.');
+      }catch(e){
+        console.error(e);
+        msg('err','No se pudo generar el PDF.');
+      }
+    });
+
+    $('#btnReset')?.addEventListener('click', ()=>{
+      localStorage.removeItem(DRAFT_KEY);
+      msg('', '');
+    });
   </script>
 </body>
 </html>
