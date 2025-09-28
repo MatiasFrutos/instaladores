@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agronomía Inteligente SRL — Parte de instalación</title>
+
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img id="logoImg" src="logo.png" alt="Logo" />
+      <h1>Parte de instalación</h1>
+    </header>
+
+    <form id="formInstalacion" class="card" onsubmit="return false">
+      <!-- A) Datos del servicio -->
+      <div class="subttl">A) Datos del servicio</div>
+      <div class="grid">
+        <div class="field">
+          <label>👤 Cliente</label>
+          <input id="cliNombre" type="text" placeholder="Nombre del cliente" />
+        </div>
+        <div class="field">
+          <label>📞 Teléfono</label>
+          <input id="cliTel" type="tel" placeholder="+54..." />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>📍 Dirección</label>
+          <input id="cliDireccion" type="text" placeholder="Calle 123" />
+        </div>
+        <div class="field">
+          <label>🏙️ Ciudad / Provincia</label>
+          <input id="cliCiudad" type="text" placeholder="Ciudad, Provincia" />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>🛠️ Técnico</label>
+          <input id="tecNombre" type="text" placeholder="Nombre del técnico" />
+        </div>
+        <div class="field">
+          <label>📅 Fecha</label>
+          <input id="fechaInst" type="date" />
+        </div>
+      </div>
+
+      <!-- B) Cámaras -->
+      <div class="subttl">B) Cámaras</div>
+      <div id="camList"></div>
+      <div class="actions">
+        <button id="btnAddCam" class="btn" type="button">➕ Agregar cámara</button>
+      </div>
+
+      <!-- C) Observaciones -->
+      <div class="subttl">C) Observaciones</div>
+      <div class="field">
+        <label>Comentarios / Observaciones</label>
+        <textarea id="obs" rows="4" placeholder="Notas generales..."></textarea>
+        <small id="countObs">0/800</small>
+      </div>
+      <div class="grid-3">
+        <label class="check"><input id="okCableado" type="checkbox" /> <span>Conexiones y cableado OK</span></label>
+        <label class="check"><input id="okMontura" type="checkbox" /> <span>Montura verificada</span></label>
+        <label class="check"><input id="okCotorra" type="checkbox" /> <span>Protección contra cotorras</span></label>
+      </div>
+
+      <!-- D) Cierre del técnico -->
+      <div class="subttl">D) Cierre del técnico</div>
+      <div class="grid">
+        <div class="field">
+          <label>Hora inicio</label>
+          <input id="horaIni" type="time" />
+        </div>
+        <div class="field">
+          <!-- Alineado + aire via CSS -->
+          <label class="check">
+            <input id="confOficina" type="checkbox" />
+            <span>Confirmación de Oficina (visibilidad remota)</span>
+          </label>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>Hora fin</label>
+          <input id="horaFin" type="time" />
+        </div>
+        <div class="field">
+          <label>Validador</label>
+          <input id="validador" type="text" placeholder="Nombre del validador" />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>Hora confirmación</label>
+          <input id="horaConf" type="time" />
+        </div>
+        <div class="field"></div>
+      </div>
+
+      <!-- Firma -->
+      <div class="subttl">Firma del técnico</div>
+      <canvas id="canvasFirm"></canvas>
+      <div class="actions">
+        <button id="btnClearFirm" class="btn ghost" type="button">Limpiar firma</button>
+      </div>
+
+      <!-- Envío -->
+      <div class="actions">
+        <button id="btnEnviar" class="btn" type="button">Enviar formulario</button>
+        <button id="btnReset" class="btn ghost" type="reset">Limpiar todo</button>
+      </div>
+      <div id="formMsg"></div>
+    </form>
+
+    <footer>
+      © <span id="year">2025</span> Agronomía Inteligente SRL
+    </footer>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- App scripts -->
+  <script defer src="app.utils.js"></script>
+  <script defer src="app.pdf.js"></script>
+  <script defer src="app.ui.js"></script>
+</body>
+</html>
