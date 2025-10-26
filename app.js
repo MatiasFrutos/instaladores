@@ -355,7 +355,9 @@ function camCard(){
   `;
 
   /* Eventos internos */
-  el.querySelector('.cam-remove').addEventListener('click', ()=>{ el.remove(); renumCams(); saveDraft(); });
+  el.querySelector('.cam-remove').addEventListener('click', ()=>{
+    el.remove(); renumCams(); saveDraft();
+  });
 
   /* Binds de NA */
   bindNA(el.querySelector(`#${id}_modem_na`), el.querySelector(`[name="${id}_modem"]`));
@@ -383,18 +385,34 @@ function camCard(){
     };
     try {
       if (navigator.permissions && navigator.permissions.query) {
-        try { const st = await navigator.permissions.query({name:'geolocation'}); if (st.state === 'denied') { msg('err','Permiso de ubicación denegado.'); return; } } catch {}
+        try {
+          const st = await navigator.permissions.query({name:'geolocation'});
+          if (st.state === 'denied') {
+            msg('err','Permiso de ubicación denegado.');
+            return;
+          }
+        } catch {}
       }
-      if (!('geolocation' in navigator)) { msg('err','Geolocalización no disponible.'); return; }
-      navigator.geolocation.getCurrentPosition(apply, (err)=>{ msg('err','No se pudo obtener la ubicación ('+err.code+').'); }, opts);
-    } catch { msg('err','No se pudo obtener la ubicación.'); }
+      if (!('geolocation' in navigator)) {
+        msg('err','Geolocalización no disponible.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        apply,
+        (err)=>{ msg('err','No se pudo obtener la ubicación ('+err.code+').'); },
+        opts
+      );
+    } catch {
+      msg('err','No se pudo obtener la ubicación.');
+    }
   });
 
   /* Delegación: Ver ejemplo */
   el.addEventListener('click', (ev)=>{
     const btn = ev.target.closest('[data-ex]'); if(!btn) return;
     const key = btn.getAttribute('data-ex');
-    const img = EXAMPLES[key]; const cap = btn.closest('.photo-cell')?.querySelector('.ph-caption')?.textContent || key;
+    const img = EXAMPLES[key];
+    const cap = btn.closest('.photo-cell')?.querySelector('.ph-caption')?.textContent || key;
     const dlg = ensureExampleModal();
     dlg.querySelector('#exImg').src = img || '';
     dlg.querySelector('#exCap').textContent = cap || '';
@@ -409,8 +427,15 @@ function camCard(){
   return el;
 }
 
-function renumCams(){ $$('.cam-card', camList).forEach((el,i)=> el.querySelector('.cam-title').textContent = `Cámara #${i+1}`); }
-function addCam(){ camList.appendChild(camCard()); saveDraft(); }
+function renumCams(){
+  $$('.cam-card', camList).forEach((el,i)=>{
+    el.querySelector('.cam-title').textContent = `Cámara #${i+1}`;
+  });
+}
+function addCam(){
+  camList.appendChild(camCard());
+  saveDraft();
+}
 $('#btnAddCam')?.addEventListener('click', addCam);
 
 /* ===== Imagen helper ===== */
@@ -421,7 +446,9 @@ function readImageAsDataURL(file, maxW=720, quality=.82){
     fr.onload=()=> img.src=fr.result;
     img.onload=()=>{
       const scale=Math.min(1,maxW/img.width);
-      const c=document.createElement('canvas'); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale);
+      c.height=Math.round(img.height*scale);
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       resolve(c.toDataURL('image/jpeg',quality));
     };
@@ -432,7 +459,10 @@ function readImageAsDataURL(file, maxW=720, quality=.82){
 /* ===== Validaciones ===== */
 function validarPrevios(){
   const cards = $$('.cam-card', camList);
-  if(!cards.length){ msg('err','Agregá al menos una cámara.'); return false; }
+  if(!cards.length){
+    msg('err','Agregá al menos una cámara.');
+    return false;
+  }
   $$('.invalid').forEach(n=>n.classList.remove('invalid'));
 
   for (const el of cards){
@@ -440,8 +470,15 @@ function validarPrevios(){
     const tipo = el.querySelector(`#${id}_tipo`)?.value;
     const ub = el.querySelector(`#${id}_chkUbic`)?.checked;
     const sat = el.querySelector(`#${id}_chkSat`)?.checked;
-    if(!tipo){ el.querySelector(`#${id}_tipo`).classList.add('invalid'); msg('err',`Seleccioná Tipo de trabajo en ${el.querySelector('.cam-title').textContent}.`); return false; }
-    if(!ub || !sat){ msg('err',`Confirmá Ubicación e imagen satelital en ${el.querySelector('.cam-title').textContent}.`); return false; }
+    if(!tipo){
+      el.querySelector(`#${id}_tipo`).classList.add('invalid');
+      msg('err',`Seleccioná Tipo de trabajo en ${el.querySelector('.cam-title').textContent}.`);
+      return false;
+    }
+    if(!ub || !sat){
+      msg('err',`Confirmá Ubicación e imagen satelital en ${el.querySelector('.cam-title').textContent}.`);
+      return false;
+    }
 
     const conexion = el.querySelector(`[name="${id}_conexion"]`)?.value || '';
     const voltNA = el.querySelector(`#${id}_volt_na`)?.checked;
@@ -450,8 +487,16 @@ function validarPrevios(){
     const radioVal = el.querySelector(`[name="${id}_radio"]`)?.value.trim();
 
     if(['A2','A4'].includes(tipo)){
-      if(!voltNA && !voltVal){ el.querySelector(`[name="${id}_volt"]`).classList.add('invalid'); msg('err',`Para ${tipo}, completá Tensión (o NA) en ${el.querySelector('.cam-title').textContent}.`); return false; }
-      if(!radioNA && !radioVal){ el.querySelector(`[name="${id}_radio"]`).classList.add('invalid'); msg('err',`Para ${tipo}, completá Potencia radioenlace (o NA) en ${el.querySelector('.cam-title').textContent}.`); return false; }
+      if(!voltNA && !voltVal){
+        el.querySelector(`[name="${id}_volt"]`).classList.add('invalid');
+        msg('err',`Para ${tipo}, completá Tensión (o NA) en ${el.querySelector('.cam-title').textContent}.`);
+        return false;
+      }
+      if(!radioNA && !radioVal){
+        el.querySelector(`[name="${id}_radio"]`).classList.add('invalid');
+        msg('err',`Para ${tipo}, completá Potencia radioenlace (o NA) en ${el.querySelector('.cam-title').textContent}.`);
+        return false;
+      }
     }
     if(conexion==='220 V' && !voltNA && !voltVal){
       el.querySelector(`[name="${id}_volt"]`).classList.add('invalid');
@@ -460,15 +505,21 @@ function validarPrevios(){
     }
   }
 
-  if(!$('#confOficina').checked){ msg('err','No podés cerrar sin confirmación de Oficina (visibilidad remota).'); return false; }
+  if(!$('#confOficina').checked){
+    msg('err','No podés cerrar sin confirmación de Oficina (visibilidad remota).');
+    return false;
+  }
   return true;
 }
 
-/* ===== PDF (genera Blob, descarga y comparte) ===== */
-async function generarPDFyCompartir(){
-  const { jsPDF } = window.jspdf || {}; if(!jsPDF) throw new Error('jsPDF no cargado');
+/* ===== PDF (solo descarga, sin WhatsApp) ===== */
+async function generarPDFyDescargar(){
+  const { jsPDF } = window.jspdf || {};
+  if(!jsPDF) throw new Error('jsPDF no cargado');
+
   const doc = new jsPDF({ unit:'pt', format:'a4' });
-  const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
   const M=56; let y=M;
 
   /* Encabezado */
@@ -478,18 +529,29 @@ async function generarPDFyCompartir(){
 
   /* A) Datos del servicio */
   const A = [
-    ['Cliente', $('#cliNombre').value||''], ['Teléfono', $('#cliTel').value||''],
-    ['Dirección', $('#cliDireccion').value||''], ['Ciudad/Prov.', $('#cliCiudad').value||''],
-    ['Técnico', $('#tecNombre').value||''], ['Fecha', $('#fechaInst').value||'']
+    ['Cliente', $('#cliNombre').value||''],
+    ['Teléfono', $('#cliTel').value||''],
+    ['Dirección', $('#cliDireccion').value||''],
+    ['Ciudad/Prov.', $('#cliCiudad').value||''],
+    ['Técnico', $('#tecNombre').value||''],
+    ['Fecha', $('#fechaInst').value||'']
   ];
-  doc.autoTable({ startY:y, head:[['A) Datos del servicio','Valor']], body:A, theme:'grid',
-    styles:{ fontSize:9.5, cellPadding:5 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
+  doc.autoTable({
+    startY:y,
+    head:[['A) Datos del servicio','Valor']],
+    body:A,
+    theme:'grid',
+    styles:{ fontSize:9.5, cellPadding:5 },
+    headStyles:{ fillColor:[245,158,11] },
+    margin:{ left:M, right:M }
+  });
   y = doc.lastAutoTable.finalY + 12;
 
   /* Cámaras */
   for (const [i,el] of $$('.cam-card', camList).entries()) {
     if(y>pageH-280){ doc.addPage(); y=M; }
-    const blockX = M-6, blockW = pageW - 2*M + 12;
+    const blockX = M-6;
+    const blockW = pageW - 2*M + 12;
     const blockTopPadding = 18;
     let y0 = y + blockTopPadding;
 
@@ -504,8 +566,15 @@ async function generarPDFyCompartir(){
       ['Revisión con imagen satelital', el.querySelector(`#${id}_chkSat`)?.checked ? 'Sí':'No'],
       ['Herramientas básicas presentes', el.querySelector(`#${id}_chkHerr`)?.checked ? 'Sí':'No'],
     ];
-    doc.autoTable({ startY:y0, head:[['A0) Parámetros técnicos','Valor']], body:A0, theme:'grid',
-      styles:{ fontSize:9.5, cellPadding:4 }, headStyles:{ fillColor:[245,158,11] }, margin:{ left:M, right:M } });
+    doc.autoTable({
+      startY:y0,
+      head:[['A0) Parámetros técnicos','Valor']],
+      body:A0,
+      theme:'grid',
+      styles:{ fontSize:9.5, cellPadding:4 },
+      headStyles:{ fillColor:[245,158,11] },
+      margin:{ left:M, right:M }
+    });
     y0 = doc.lastAutoTable.finalY + 8;
 
     const modemNA = el.querySelector(`#${id}_modem_na`)?.checked;
@@ -536,7 +605,13 @@ async function generarPDFyCompartir(){
       ['Tensión (V)', voltNA ? 'No aplica' : (voltVal || '')],
       ['Lat/Lon (GMS)', `${el.querySelector(`[name="${id}_latGms"]`)?.value || ''} , ${el.querySelector(`[name="${id}_lonGms"]`)?.value || ''}`]
     ];
-    doc.autoTable({ startY: y0, body, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
+    doc.autoTable({
+      startY: y0,
+      body,
+      theme:'plain',
+      styles:{ fontSize:10, cellPadding:3 },
+      margin:{ left:M, right:M }
+    });
     y0 = doc.lastAutoTable.finalY + 8;
 
     /* Fotos (miniaturas) */
@@ -552,7 +627,7 @@ async function generarPDFyCompartir(){
     if(items.length){
       doc.setFont('helvetica','bold'); doc.setFontSize(11);
       doc.text('Fotos', M, y0); y0 += 6;
-      const size=110, gap=10; let x=M, rowH=size+22;
+      const size=110, gap=10; let x=M; const rowH=size+22;
       for(const it of items){
         if(x+size>pageW-M){ x=M; y0+=rowH; }
         if(y0+size+18>pageH-M){
@@ -604,7 +679,13 @@ async function generarPDFyCompartir(){
     ['Montura verificada', $('#okMontura').checked?'Sí':'No'],
     ['Protección contra cotorras', $('#okCotorra').checked?'Sí':'No'],
   ];
-  doc.autoTable({ startY:y, body:qual, theme:'plain', styles:{ fontSize:10, cellPadding:3 }, margin:{ left:M, right:M } });
+  doc.autoTable({
+    startY:y,
+    body:qual,
+    theme:'plain',
+    styles:{ fontSize:10, cellPadding:3 },
+    margin:{ left:M, right:M }
+  });
   y = doc.lastAutoTable.finalY + 18;
 
   /* Cierre técnico */
@@ -636,30 +717,16 @@ async function generarPDFyCompartir(){
   const fname = `parte-instalacion-${$('#fechaInst').value || new Date().toISOString().slice(0,10)}.pdf`;
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = fname; a.style.display='none';
-  document.body.appendChild(a); a.click(); a.remove();
+  a.href = url;
+  a.download = fname;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 2000);
 
-  /* Compartir por WhatsApp */
-  await compartirPorWhatsApp(blob, fname);
-}
-
-/* ===== Compartir por WhatsApp ===== */
-async function compartirPorWhatsApp(blob, filename){
-  const numeroWhatsApp = '5491160301418'; // +54 9 11 6030-1418
-  const texto = `👋 Envío el Parte de Instalación en PDF.\nArchivo: ${filename}\n(Adjunto el PDF descargado)`;
-  try{
-    const file = new File([blob], filename, { type: 'application/pdf', lastModified: Date.now() });
-    if (navigator.canShare && navigator.canShare({ files:[file] })) {
-      await navigator.share({ files:[file], title:'Parte de instalación', text: 'Parte de instalación generado desde el formulario.' });
-      msg('ok','PDF compartido desde la hoja de compartir.');
-      return;
-    }
-  }catch(e){ /* Ignorar y hacer fallback */ }
-
-  const wa = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
-  window.open(wa, '_blank', 'noopener,noreferrer');
-  msg('ok','PDF descargado. Se abrió WhatsApp con el mensaje. Adjuntá el PDF al chat.');
+  // Mensaje final solo descarga local
+  msg('ok','PDF generado y descargado en este dispositivo.');
 }
 
 /* ===== Autosave / Restore ===== */
@@ -785,7 +852,9 @@ function deserialize(data){
   renumCams();
 }
 
-function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(serialize())); }
+function saveDraft(){
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(serialize()));
+}
 const saveDraftThrottled = throttle(saveDraft, 800);
 function restoreDraft(){
   const raw = localStorage.getItem(DRAFT_KEY);
@@ -807,11 +876,11 @@ $('#btnEnviar')?.addEventListener('click', async ()=>{
   if (!validarPrevios()) return;
 
   try{
-    await generarPDFyCompartir();
-    msg('ok','PDF generado y descargado. Abrí WhatsApp para enviar (si no se abrió solo).');
+    await generarPDFyDescargar();
+    // Mensaje final ya se da en generarPDFyDescargar()
   }catch(e){
     console.error(e);
-    msg('err','No se pudo generar/compartir el PDF.');
+    msg('err','No se pudo generar el PDF.');
   }
 });
 
