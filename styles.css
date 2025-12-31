@@ -584,3 +584,35 @@ canvas#canvasFirm{
     line-height: 1.3;
   }
 }
+/* =========================================================
+   FIX MOBILE — Pruebas y validaciones
+   ========================================================= */
+
+@media (max-width: 720px){
+
+  /* La grilla pasa a UNA columna */
+  .grid-3{
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  /* Cada check se comporta como item vertical */
+  .grid-3 .check{
+    align-items: flex-start;      /* ⬅️ clave */
+    gap: 12px;
+    line-height: 1.35;
+    font-size: .98rem;
+  }
+
+  /* Checkbox alineado arriba, no al medio */
+  .grid-3 .check input[type="checkbox"]{
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* El texto respira y no se “sale” */
+  .grid-3 .check span{
+    display: block;
+    white-space: normal;
+  }
+}
