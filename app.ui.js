@@ -62,16 +62,6 @@
     CamPoste: './camposte.jpg',
   };
 
-  /* APNs por operador */
-  function opDefaults(op) {
-    switch (op) {
-      case 'Movistar': return { apn: 'internet.gprs.unifon.com.ar', user: '',         pass: ''         };
-      case 'Claro':    return { apn: 'igprs.claro.com.ar',           user: 'INTERNET', pass: 'INTERNET' };
-      case 'SIM MANAGER': return { apn: 'wingtp.personal.com',       user: '',         pass: ''         };
-      default:         return { apn: '', user: '', pass: '' };
-    }
-  }
-
   /* Trozos UI */
   function planChunk(id) {
     return `
@@ -80,7 +70,7 @@
 
       <div class="grid">
         <div class="field">
-          <label for="${id}_tipo">🧩 Tipo de trabajo <span class="req">*</span></label>
+          <label for="${id}_tipo">Tipo de trabajo <span class="req">*</span></label>
           <select id="${id}_tipo" name="${id}_tipo" required class="ctl">
             <option value="">— Elegí —</option>
             <option value="A1">A1 — Instalación cámaras nuevas</option>
@@ -90,7 +80,7 @@
           </select>
         </div>
         <div class="field">
-          <label for="${id}_estructura">🏗️ Estructura</label>
+          <label for="${id}_estructura">Estructura</label>
           <select id="${id}_estructura" name="${id}_estructura" class="ctl">
             <option value="">— Elegí —</option>
             <option>Torre</option><option>Poste</option><option>Columna</option><option>Techo</option>
@@ -98,10 +88,10 @@
         </div>
       </div>
 
-      <div class="grid-3 checkgrid">
-        <label class="check"><input type="checkbox" id="${id}_chkUbic"/> <span>📍 Ubicación confirmada</span></label>
-        <label class="check"><input type="checkbox" id="${id}_chkSat"/> <span>🛰️ Revisión satelital</span></label>
-        <label class="check"><input type="checkbox" id="${id}_chkHerr"/> <span>🧰 Herramientas presentes</span></label>
+      <div class="checks" style="grid-template-columns:repeat(3,1fr)">
+        <label class="check"><input type="checkbox" id="${id}_chkUbic"/> <span>Ubicación confirmada</span></label>
+        <label class="check"><input type="checkbox" id="${id}_chkSat"/> <span>Revisión satelital</span></label>
+        <label class="check"><input type="checkbox" id="${id}_chkHerr"/> <span>Herramientas presentes</span></label>
       </div>
     </div>`;
   }
@@ -124,7 +114,7 @@
             <label for="${id}_${k}">${txt}</label>
           </div>
           <div class="actions" style="justify-content:flex-start">
-            <button type="button" class="btn ghost small" data-ex="${k}">🔍 Ver ejemplo</button>
+            <button type="button" class="btn ghost" data-ex="${k}">Ver ejemplo</button>
           </div>
           <small class="ph-caption">${txt}</small>
         </div>`).join('')}
@@ -133,12 +123,12 @@
 
   function testsChunk(id) {
     return `
-    <div class="grid-3">
-      <label class="check"><input type="checkbox" id="${id}_t_vivo"/> <span>👁️ Vista en vivo</span></label>
-      <label class="check"><input type="checkbox" id="${id}_t_noti"/> <span>🔔 Notificaciones app</span></label>
-      <label class="check"><input type="checkbox" id="${id}_t_sd"/> <span>💾 Micro SD grabando</span></label>
-      <label class="check"><input type="checkbox" id="${id}_t_evt"/> <span>🎯 Eventos / movimientos</span></label>
-      <label class="check"><input type="checkbox" id="${id}_t_panel"/> <span>🔌 Carga del panel</span></label>
+    <div class="checks" style="grid-template-columns:repeat(3,1fr)">
+      <label class="check"><input type="checkbox" id="${id}_t_vivo"/> <span>Vista en vivo</span></label>
+      <label class="check"><input type="checkbox" id="${id}_t_noti"/> <span>Notificaciones app</span></label>
+      <label class="check"><input type="checkbox" id="${id}_t_sd"/> <span>Micro SD grabando</span></label>
+      <label class="check"><input type="checkbox" id="${id}_t_evt"/> <span>Eventos / movimientos</span></label>
+      <label class="check"><input type="checkbox" id="${id}_t_panel"/> <span>Carga del panel</span></label>
     </div>`;
   }
 
@@ -150,14 +140,14 @@
     dlg.style.padding = '0';
     dlg.innerHTML = `
       <form method="dialog" style="margin:0;padding:0">
-        <div style="max-width:min(96vw,900px);max-height:90vh;width:96vw;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25);border:1px solid #e5e7eb;display:flex;flex-direction:column;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #eee">
-            <strong style="font:600 16px/1.2 system-ui,-apple-system,Segoe UI,Roboto">Ejemplo de foto requerida</strong>
-            <button class="btn" value="close" style="margin:0">✖️ Cerrar</button>
+        <div style="max-width:min(96vw,920px);max-height:90vh;width:96vw;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.28);border:1px solid #e7ebf2;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid #eef2f8">
+            <strong style="font:900 16px/1.2 system-ui,-apple-system,Segoe UI,Roboto">Ejemplo de foto requerida</strong>
+            <button class="btn ghost" value="close" style="margin:0">Cerrar</button>
           </div>
-          <div style="padding:10px;overflow:auto;display:flex;flex-direction:column;align-items:center;">
-            <img id="exImg" src="" alt="Ejemplo" style="display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:10px"/>
-            <p id="exCap" style="margin:.6rem 0 0;color:#374151;font-size:.95rem;align-self:flex-start;"></p>
+          <div style="padding:12px;overflow:auto;display:flex;flex-direction:column;align-items:center;">
+            <img id="exImg" src="" alt="Ejemplo" style="display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:14px;border:1px solid #e7ebf2"/>
+            <p id="exCap" style="margin:.7rem 0 0;color:#334155;font-size:.98rem;align-self:flex-start;"></p>
           </div>
         </div>
       </form>`;
@@ -172,30 +162,31 @@
     const el = document.createElement('div');
     el.className = 'cam-card';
     el.dataset.cam = id;
+
     el.innerHTML = `
       <div class="cam-head">
         <h3 class="cam-title">Cámara</h3>
-        <button class="cam-remove btn ghost small" type="button">🗑️ Eliminar</button>
+        <button class="cam-remove btn ghost" type="button">Eliminar</button>
       </div>
 
       ${planChunk(id)}
 
       <div class="grid">
         <div class="field">
-          <label>📦 Modelo</label>
+          <label>Modelo</label>
           <select name="${id}_modelo" class="ctl">
             ${modelos.map((m) => `<option>${m}</option>`).join('')}
           </select>
         </div>
         <div class="field">
-          <label>🔖 N° de serie</label>
+          <label>N° de serie</label>
           <input type="text" name="${id}_serie" class="mono ctl"/>
         </div>
       </div>
 
       <div class="grid">
         <div class="field">
-          <label>🔌 Tipo de conexión</label>
+          <label>Tipo de conexión</label>
           <select name="${id}_conexion" class="ctl">
             <option value="">— Elegí —</option>
             <option>Solar</option><option>220 V</option>
@@ -203,85 +194,83 @@
         </div>
         <div class="field">
           <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <label>📶 Marca y modelo del módem</label>
-            <label class="na"><input type="checkbox" id="${id}_modem_na"/> No aplica</label>
+            <label>Marca y modelo del módem</label>
+            <label class="na muted"><input type="checkbox" id="${id}_modem_na"/> No aplica</label>
           </div>
           <input type="text" name="${id}_modem" placeholder="p.ej. Huawei B311…" class="ctl"/>
         </div>
       </div>
 
       <div class="block">
-        <div class="subttl">🌐 Ubicación y conectividad</div>
-        <div class="grid-3">
+        <div class="subttl">Ubicación y conectividad</div>
+
+        <div class="grid">
           <div class="field">
-            <label>📡 Operador SIM</label>
+            <label>Operador SIM</label>
             <select name="${id}_operador" class="ctl">
               <option value="">— Elegí —</option>
               <option>Movistar</option><option>Claro</option><option>SIM MANAGER</option>
             </select>
           </div>
+
           <div class="field">
-            <label>🛠️ APN</label>
-            <input type="text" name="${id}_apn" placeholder="APN" class="ctl"/>
-          </div>
-          <div class="field">
-            <label>👤 Usuario APN</label>
-            <input type="text" name="${id}_apn_user" placeholder="Usuario (si aplica)" class="ctl"/>
-          </div>
-          <div class="field">
-            <label>🔒 Password APN</label>
-            <input type="text" name="${id}_apn_pass" placeholder="Password (si aplica)" class="ctl"/>
-          </div>
-          <div class="field">
-            <label>📶 Señal (dBm)</label>
+            <label>Señal (dBm)</label>
             <input type="text" name="${id}_rssi" placeholder="-75 / -100" class="ctl"/>
-          </div>
-          <div class="field">
-            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>⏱️ Velocidad (Mbps up/down)</label>
-              <label class="na"><input type="checkbox" id="${id}_vel_na"/> No aplica</label>
-            </div>
-            <input type="text" name="${id}_vel" placeholder="ej: 8 / 3" class="ctl"/>
-          </div>
-          <div class="field">
-            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>📡 Potencia radioenlace (dBm)</label>
-              <label class="na"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
-            </div>
-            <input type="text" name="${id}_radio" placeholder="ej: -60" class="ctl"/>
-          </div>
-          <div class="field">
-            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>🔋 Tensión (V)</label>
-              <label class="na"><input type="checkbox" id="${id}_volt_na"/> No aplica</label>
-            </div>
-            <input type="text" name="${id}_volt" placeholder="ej: 12.0" class="ctl"/>
           </div>
         </div>
 
         <div class="grid">
           <div class="field">
-            <label>🧭 Latitud (GMS)</label>
+            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <label>Velocidad (Mbps up/down)</label>
+              <label class="na muted"><input type="checkbox" id="${id}_vel_na"/> No aplica</label>
+            </div>
+            <input type="text" name="${id}_vel" placeholder="ej: 8 / 3" class="ctl"/>
+          </div>
+
+          <div class="field">
+            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <label>Potencia radioenlace (dBm)</label>
+              <label class="na muted"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
+            </div>
+            <input type="text" name="${id}_radio" placeholder="ej: -60" class="ctl"/>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <label>Tensión (V)</label>
+              <label class="na muted"><input type="checkbox" id="${id}_volt_na"/> No aplica</label>
+            </div>
+            <input type="text" name="${id}_volt" placeholder="ej: 12.0" class="ctl"/>
+          </div>
+          <div class="field"></div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label>Latitud (GMS)</label>
             <input type="text" name="${id}_latGms" placeholder='ej: 38°24′51.8″ S' class="ctl"/>
           </div>
           <div class="field">
-            <label>🧭 Longitud (GMS)</label>
+            <label>Longitud (GMS)</label>
             <input type="text" name="${id}_lonGms" placeholder='ej: 61°06′30.2″ W' class="ctl"/>
           </div>
         </div>
 
         <div class="actions">
-          <button class="btn" type="button" data-act="geo">📍 Usar mi ubicación</button>
+          <button class="btn ghost" type="button" data-act="geo">Usar mi ubicación</button>
         </div>
       </div>
 
       <div class="block">
-        <div class="subttl">✅ Pruebas y validaciones</div>
+        <div class="subttl">Pruebas y validaciones</div>
         ${testsChunk(id)}
       </div>
 
       <div class="block">
-        <div class="subttl">🖼️ Fotos</div>
+        <div class="subttl">Fotos</div>
         ${photoChunk(id)}
       </div>
     `;
@@ -296,15 +285,6 @@
     bindNA(el.querySelector(`#${id}_vel_na`),   el.querySelector(`[name="${id}_vel"]`));
     bindNA(el.querySelector(`#${id}_volt_na`),  el.querySelector(`[name="${id}_volt"]`));
 
-    const selOp = el.querySelector(`[name="${id}_operador"]`);
-    const apn = el.querySelector(`[name="${id}_apn"]`);
-    const apnU = el.querySelector(`[name="${id}_apn_user"]`);
-    const apnP = el.querySelector(`[name="${id}_apn_pass"]`);
-    selOp?.addEventListener('change', () => {
-      const d = opDefaults(selOp.value);
-      apn.value = d.apn; apnU.value = d.user; apnP.value = d.pass; saveDraftThrottled();
-    });
-
     el.querySelector('[data-act="geo"]')?.addEventListener('click', async () => {
       const opts = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
       const apply = ({ coords }) => {
@@ -314,8 +294,10 @@
       };
       try {
         if (navigator.permissions?.query) {
-          try { const st = await navigator.permissions.query({ name: 'geolocation' });
-            if (st.state === 'denied') { msg('err','Permiso de ubicación denegado.'); return; } } catch {}
+          try {
+            const st = await navigator.permissions.query({ name: 'geolocation' });
+            if (st.state === 'denied') { msg('err','Permiso de ubicación denegado.'); return; }
+          } catch {}
         }
         if (!('geolocation' in navigator)) { msg('err','Geolocalización no disponible.'); return; }
         navigator.geolocation.getCurrentPosition(
@@ -323,7 +305,9 @@
           (err)=>msg('err','No se pudo obtener ubicación ('+err.code+').'),
           opts
         );
-      } catch { msg('err','No se pudo obtener la ubicación.'); }
+      } catch {
+        msg('err','No se pudo obtener la ubicación.');
+      }
     });
 
     el.addEventListener('click', (ev) => {
@@ -353,7 +337,11 @@
     const data = {
       A:{ cliNombre:$('#cliNombre')?.value, cliTel:$('#cliTel')?.value, cliDireccion:$('#cliDireccion')?.value, cliCiudad:$('#cliCiudad')?.value, tecNombre:$('#tecNombre')?.value, fechaInst:$('#fechaInst')?.value },
       C:{ obs:$('#obs')?.value, okCableado:!!$('#okCableado')?.checked, okMontura:!!$('#okMontura')?.checked, okCotorra:!!$('#okCotorra')?.checked },
-      D:{ dni:$('#dniTec')?.value, horaIni:$('#horaIni')?.value, horaFin:$('#horaFin')?.value, conf:!!$('#confOficina')?.checked, horaConf:$('#horaConf')?.value, validador:$('#validador')?.value },
+      D:{
+        conf:!!$('#confOficina')?.checked,
+        horaConf: $('#horaConf')?.value,
+        validador: $('#validador')?.value
+      },
       cams: $$('.cam-card', camList).map(el=>{
         const id=el.dataset.cam, pick=n=>el.querySelector(`[name="${id}_${n}"]`), chk=s=>el.querySelector(`#${id}_${s}`)?.checked||false;
         return { id,
@@ -361,9 +349,11 @@
           chkUbic:chk('chkUbic'), chkSat:chk('chkSat'), chkHerr:chk('chkHerr'),
           modelo:pick('modelo')?.value||'', serie:pick('serie')?.value||'', conexion:pick('conexion')?.value||'',
           modem_na:chk('modem_na'), modem:pick('modem')?.value||'',
-          operador:pick('operador')?.value||'', apn:pick('apn')?.value||'', apn_user:pick('apn_user')?.value||'', apn_pass:pick('apn_pass')?.value||'',
-          rssi:pick('rssi')?.value||'', vel_na:chk('vel_na'), vel:pick('vel')?.value||'',
-          radio_na:chk('radio_na'), radio:pick('radio')?.value||'', volt_na:chk('volt_na'), volt:pick('volt')?.value||'',
+          operador:pick('operador')?.value||'',
+          rssi:pick('rssi')?.value||'',
+          vel_na:chk('vel_na'), vel:pick('vel')?.value||'',
+          radio_na:chk('radio_na'), radio:pick('radio')?.value||'',
+          volt_na:chk('volt_na'), volt:pick('volt')?.value||'',
           latGms:pick('latGms')?.value||'', lonGms:pick('lonGms')?.value||''
         };
       })
@@ -385,38 +375,42 @@
     $('#okMontura') && ($('#okMontura').checked=!!data?.C?.okMontura);
     $('#okCotorra') && ($('#okCotorra').checked=!!data?.C?.okCotorra);
 
-    $('#dniTec') && ($('#dniTec').value=data?.D?.dni||'');
-    $('#horaIni') && ($('#horaIni').value=data?.D?.horaIni||'');
-    $('#horaFin') && ($('#horaFin').value=data?.D?.horaFin||'');
     $('#confOficina') && ($('#confOficina').checked=!!data?.D?.conf);
     $('#horaConf') && ($('#horaConf').value=data?.D?.horaConf||'');
     $('#validador') && ($('#validador').value=data?.D?.validador||'');
 
-    camList.innerHTML=''; (data.cams||[]).forEach(c=>{
+    camList.innerHTML='';
+    (data.cams||[]).forEach(c=>{
       const el=camCard(), id=el.dataset.cam;
       el.querySelector(`#${id}_tipo`).value=c.tipo;
       el.querySelector(`#${id}_estructura`).value=c.estructura;
       el.querySelector(`#${id}_chkUbic`).checked=!!c.chkUbic;
       el.querySelector(`#${id}_chkSat`).checked=!!c.chkSat;
       el.querySelector(`#${id}_chkHerr`).checked=!!c.chkHerr;
+
       el.querySelector(`[name="${id}_modelo"]`).value=c.modelo;
       el.querySelector(`[name="${id}_serie"]`).value=c.serie;
       el.querySelector(`[name="${id}_conexion"]`).value=c.conexion;
+
       el.querySelector(`#${id}_modem_na`).checked=!!c.modem_na;
       el.querySelector(`[name="${id}_modem"]`).value=c.modem;
+
       el.querySelector(`[name="${id}_operador"]`).value=c.operador;
-      el.querySelector(`[name="${id}_apn"]`).value=c.apn;
-      el.querySelector(`[name="${id}_apn_user"]`).value=c.apn_user;
-      el.querySelector(`[name="${id}_apn_pass"]`).value=c.apn_pass;
+
       el.querySelector(`[name="${id}_rssi"]`).value=c.rssi;
+
       el.querySelector(`#${id}_vel_na`).checked=!!c.vel_na;
       el.querySelector(`[name="${id}_vel"]`).value=c.vel;
+
       el.querySelector(`#${id}_radio_na`).checked=!!c.radio_na;
       el.querySelector(`[name="${id}_radio"]`).value=c.radio;
+
       el.querySelector(`#${id}_volt_na`).checked=!!c.volt_na;
       el.querySelector(`[name="${id}_volt"]`).value=c.volt;
+
       el.querySelector(`[name="${id}_latGms"]`).value=c.latGms;
       el.querySelector(`[name="${id}_lonGms"]`).value=c.lonGms;
+
       camList.appendChild(el);
     });
     renumCams();
@@ -490,20 +484,16 @@
     try { form.reset(); } catch {}
     localStorage.removeItem(DRAFT_KEY);
 
-    /* reiniciar cámaras: 1 vacía */
     camList.innerHTML='';
     camList.appendChild(camCard());
 
-    /* limpiar firma */
     const c = document.getElementById('canvasFirm');
     if (c?.getContext){
       const ctx = c.getContext('2d');
       ctx.clearRect(0,0,c.width,c.height);
     }
 
-    /* volver a poner fecha de hoy */
     setToday();
-
     msg('', '');
   });
 
@@ -532,12 +522,11 @@
       ctx.setTransform(dpr,0,0,dpr,0,0);
       ctx.lineWidth = 2;
       ctx.lineCap   = 'round';
-      ctx.strokeStyle = '#111827';
+      ctx.strokeStyle = '#0b1220';
     }
     resize();
     window.addEventListener('resize', resize);
 
-    // bloquear scroll al firmar en táctil
     canvas.style.touchAction = 'none';
 
     const pos = (e)=>{

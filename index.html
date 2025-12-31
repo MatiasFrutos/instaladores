@@ -9,117 +9,172 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <img id="logoImg" src="logo.png" alt="Logo" />
-      <h1>Parte de instalación</h1>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <img id="logoImg" class="brand__logo" src="logo.png" alt="Logo" />
+        <div class="brand__txt">
+          <div class="brand__kicker">Agronomía Inteligente SRL</div>
+          <h1 class="brand__title">Parte de instalación</h1>
+          <div class="brand__sub">Registro operativo · Evidencia técnica · Trazabilidad</div>
+        </div>
+      </div>
+
+      <div class="topbar__meta">
+        <div class="pill">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Formulario</span>
+        </div>
+        <div class="pill mono" id="todayPill">—</div>
+      </div>
     </header>
 
-    <form id="formInstalacion" class="card" onsubmit="return false">
-      <!-- A) Datos del servicio -->
-      <div class="subttl">A) Datos del servicio</div>
-      <div class="grid">
-        <div class="field">
-          <label>👤 Cliente</label>
-          <input id="cliNombre" type="text" placeholder="Nombre del cliente" />
-        </div>
-        <div class="field">
-          <label>📞 Teléfono</label>
-          <input id="cliTel" type="tel" placeholder="+54..." />
-        </div>
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>📍 Dirección</label>
-          <input id="cliDireccion" type="text" placeholder="Calle 123" />
-        </div>
-        <div class="field">
-          <label>🏙️ Ciudad / Provincia</label>
-          <input id="cliCiudad" type="text" placeholder="Ciudad, Provincia" />
-        </div>
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>🛠️ Técnico</label>
-          <input id="tecNombre" type="text" placeholder="Nombre del técnico" />
-        </div>
-        <div class="field">
-          <label>📅 Fecha</label>
-          <input id="fechaInst" type="date" />
-        </div>
-      </div>
+    <main class="content">
+      <form id="formInstalacion" class="panel" onsubmit="return false">
+        <!-- A) Datos del servicio -->
+        <div class="section">
+          <div class="section__head">
+            <h2 class="section__title">A) Datos del servicio</h2>
+            <p class="section__hint">Información base para identificar cliente, visita y responsable técnico.</p>
+          </div>
 
-      <!-- B) Cámaras -->
-      <div class="subttl">B) Cámaras</div>
-      <div id="camList"></div>
-      <div class="actions">
-        <button id="btnAddCam" class="btn" type="button">➕ Agregar cámara</button>
-      </div>
+          <div class="grid">
+            <div class="field">
+              <label>Cliente</label>
+              <input id="cliNombre" type="text" placeholder="Nombre del cliente" />
+            </div>
+            <div class="field">
+              <label>Teléfono</label>
+              <input id="cliTel" type="tel" placeholder="+54..." />
+            </div>
+          </div>
 
-      <!-- C) Observaciones -->
-      <div class="subttl">C) Observaciones</div>
-      <div class="field">
-        <label>Comentarios / Observaciones</label>
-        <textarea id="obs" rows="4" placeholder="Notas generales..."></textarea>
-        <small id="countObs">0/800</small>
-      </div>
-      <div class="grid-3">
-        <label class="check"><input id="okCableado" type="checkbox" /> <span>Conexiones y cableado OK</span></label>
-        <label class="check"><input id="okMontura" type="checkbox" /> <span>Montura verificada</span></label>
-        <label class="check"><input id="okCotorra" type="checkbox" /> <span>Protección contra cotorras</span></label>
-      </div>
+          <div class="grid">
+            <div class="field">
+              <label>Dirección</label>
+              <input id="cliDireccion" type="text" placeholder="Calle 123" />
+            </div>
+            <div class="field">
+              <label>Ciudad / Provincia</label>
+              <input id="cliCiudad" type="text" placeholder="Ciudad, Provincia" />
+            </div>
+          </div>
 
-      <!-- D) Cierre del técnico -->
-      <div class="subttl">D) Cierre del técnico</div>
-      <div class="grid">
-        <div class="field">
-          <label>Hora inicio</label>
-          <input id="horaIni" type="time" />
+          <div class="grid">
+            <div class="field">
+              <label>Técnico</label>
+              <input id="tecNombre" type="text" placeholder="Nombre del técnico" />
+            </div>
+            <div class="field">
+              <label>Fecha</label>
+              <input id="fechaInst" type="date" />
+            </div>
+          </div>
         </div>
-        <div class="field">
-          <!-- Alineado + aire via CSS -->
-          <label class="check">
-            <input id="confOficina" type="checkbox" />
-            <span>Confirmación de Oficina (visibilidad remota)</span>
-          </label>
-        </div>
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>Hora fin</label>
-          <input id="horaFin" type="time" />
-        </div>
-        <div class="field">
-          <label>Validador</label>
-          <input id="validador" type="text" placeholder="Nombre del validador" />
-        </div>
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>Hora confirmación</label>
-          <input id="horaConf" type="time" />
-        </div>
-        <div class="field"></div>
-      </div>
 
-      <!-- Firma -->
-      <div class="subttl">Firma del técnico</div>
-      <canvas id="canvasFirm"></canvas>
-      <div class="actions">
-        <button id="btnClearFirm" class="btn ghost" type="button">Limpiar firma</button>
-      </div>
+        <!-- B) Cámaras -->
+        <div class="section">
+          <div class="section__head">
+            <h2 class="section__title">B) Cámaras</h2>
+            <p class="section__hint">Agregá una tarjeta por cámara instalada/soportada. Las fotos van por cámara.</p>
+          </div>
 
-      <!-- Envío -->
-      <div class="actions">
-        <button id="btnEnviar" class="btn" type="button">Generar pdf</button>
-        <button id="btnReset" class="btn ghost" type="reset">Limpiar todo</button>
-      </div>
-      <div id="formMsg"></div>
-    </form>
+          <div id="camList"></div>
 
-    <footer>
-      © <span id="year">2025</span> Agronomía Inteligente SRL
-    </footer>
+          <div class="actions">
+            <button id="btnAddCam" class="btn primary" type="button">Agregar cámara</button>
+          </div>
+        </div>
+
+        <!-- C) Observaciones -->
+        <div class="section">
+          <div class="section__head">
+            <h2 class="section__title">C) Observaciones</h2>
+            <p class="section__hint">Notas operativas: contexto, decisiones, excepciones, detalles relevantes.</p>
+          </div>
+
+          <div class="field">
+            <label>Comentarios / Observaciones</label>
+            <textarea id="obs" rows="4" placeholder="Notas generales..."></textarea>
+            <div class="field__meta">
+              <small class="muted">Recomendación: registrar cambios, incidentes y pruebas.</small>
+              <small id="countObs" class="mono">0/800</small>
+            </div>
+          </div>
+
+          <div class="checks">
+            <label class="check">
+              <input id="okCableado" type="checkbox" />
+              <span>Conexiones y cableado OK</span>
+            </label>
+            <label class="check">
+              <input id="okMontura" type="checkbox" />
+              <span>Montura verificada</span>
+            </label>
+            <label class="check">
+              <input id="okCotorra" type="checkbox" />
+              <span>Protección contra cotorras</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- D) Cierre del técnico -->
+        <div class="section">
+          <div class="section__head">
+            <h2 class="section__title">D) Cierre del técnico</h2>
+            <p class="section__hint">Validación de oficina + responsable. (Horas removidas, como pediste).</p>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label class="check check--inline">
+                <input id="confOficina" type="checkbox" />
+                <span>Confirmación de Oficina (visibilidad remota)</span>
+              </label>
+            </div>
+
+            <div class="field">
+              <label>Validador</label>
+              <input id="validador" type="text" placeholder="Nombre del validador" />
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label>Hora confirmación</label>
+              <input id="horaConf" type="time" />
+            </div>
+            <div class="field"></div>
+          </div>
+
+          <div class="signature">
+            <div class="signature__head">
+              <div>
+                <div class="signature__title">Firma del técnico</div>
+                <div class="signature__sub muted">Usá mouse o táctil. Recomendación: firmar a pantalla completa en móvil.</div>
+              </div>
+              <button id="btnClearFirm" class="btn ghost" type="button">Limpiar</button>
+            </div>
+            <canvas id="canvasFirm"></canvas>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="bar">
+          <div class="bar__left">
+            <div id="formMsg"></div>
+          </div>
+          <div class="bar__right">
+            <button id="btnReset" class="btn ghost" type="reset">Limpiar todo</button>
+            <button id="btnEnviar" class="btn primary" type="button">Generar PDF</button>
+          </div>
+        </div>
+      </form>
+
+      <footer class="footer">
+        © <span id="year">2025</span> Agronomía Inteligente SRL
+      </footer>
+    </main>
   </div>
 
   <!-- PDF libs -->
@@ -130,6 +185,15 @@
   <script defer src="app.utils.js"></script>
   <script defer src="app.pdf.js"></script>
   <script defer src="app.ui.js"></script>
+
+  <script>
+    // solo cosmetico (no lógica de negocio)
+    (function(){
+      const el = document.getElementById('todayPill');
+      if(!el) return;
+      const d = new Date();
+      el.textContent = d.toLocaleDateString('es-AR', { weekday:'short', year:'numeric', month:'2-digit', day:'2-digit' });
+    })();
+  </script>
 </body>
 </html>
-

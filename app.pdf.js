@@ -4,9 +4,7 @@
   const WA_NUMBER_INTL = '5491160301418'; // +54 9 11 6030-1418 (sin símbolos)
   const WA_TEXT = 'Hola, te envío el parte de instalación.';
 
-  // Quita emojis y pictogramas para evitar caracteres raros en PDF
   function stripEmoji(str = '') {
-    // rango amplio de pictogramas + símbolos combinados
     return String(str).replace(
       /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDDFF]|[\u2190-\u21FF]|[\u2600-\u26FF])/g,
       ''
@@ -14,14 +12,13 @@
   }
   const clean = (v) => stripEmoji(v ?? '');
 
-  // Helper UI
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+
   function readImageAsDataURL(file, maxW = 720, quality = 0.82) {
     return new Promise((resolve) => {
       if (!file) return resolve(null);
-      const img = new Image(),
-        fr = new FileReader();
+      const img = new Image(), fr = new FileReader();
       fr.onload = () => (img.src = fr.result);
       img.onload = () => {
         const scale = Math.min(1, maxW / img.width);
@@ -35,7 +32,6 @@
     });
   }
 
-  // Generar Blob del PDF
   async function generarPDFBlob() {
     const { jsPDF } = window.jspdf || {};
     if (!jsPDF) throw new Error('jsPDF no cargado');
@@ -50,12 +46,12 @@
     doc.setFontSize(15);
     doc.text(clean('Agronomía Inteligente SRL — Parte de instalación'), M, y);
     y += 22;
-    doc.setDrawColor(245, 158, 11);
+
+    doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(2);
     doc.line(M, y, pageW - M, y);
     y += 16;
 
-    // A) Datos del servicio
     const A = [
       ['Cliente', clean($('#cliNombre')?.value || '')],
       ['Teléfono', clean($('#cliTel')?.value || '')],
@@ -70,30 +66,26 @@
       body: A,
       theme: 'grid',
       styles: { fontSize: 9.5, cellPadding: 5 },
-      headStyles: { fillColor: [245, 158, 11] },
+      headStyles: { fillColor: [37, 99, 235] },
       margin: { left: M, right: M },
     });
     y = doc.lastAutoTable.finalY + 12;
 
-    // Cada cámara
     for (const [i, el] of $$('.cam-card', $('#camList')).entries()) {
       if (y > pageH - 280) {
         doc.addPage();
         y = M;
       }
       const id = el.dataset.cam;
-      const blockX = M - 6,
-        blockW = pageW - 2 * M + 12;
+      const blockX = M - 6, blockW = pageW - 2 * M + 12;
       const padTop = 18;
       let y0 = y + padTop;
 
-      // Título cámara
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text(clean(el.querySelector('.cam-title')?.textContent || `Cámara #${i + 1}`), M, y0);
       y0 += 12;
 
-      // A0 por cámara
       const A0 = [
         ['Tipo de trabajo', clean(el.querySelector(`#${id}_tipo`)?.value || '—')],
         ['Estructura', clean(el.querySelector(`#${id}_estructura`)?.value || '—')],
@@ -107,12 +99,11 @@
         body: A0.map(([k, v]) => [clean(k), clean(String(v))]),
         theme: 'grid',
         styles: { fontSize: 9.5, cellPadding: 4 },
-        headStyles: { fillColor: [245, 158, 11] },
+        headStyles: { fillColor: [37, 99, 235] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 8;
 
-      // Datos de cámara
       const modemNA = el.querySelector(`#${id}_modem_na`)?.checked;
       const radioNA = el.querySelector(`#${id}_radio_na`)?.checked;
       const voltNA = el.querySelector(`#${id}_volt_na`)?.checked;
@@ -124,15 +115,6 @@
         ['Tipo de conexión', el.querySelector(`[name="${id}_conexion"]`)?.value || ''],
         ['Módem (marca/modelo)', modemNA ? 'No aplica' : (el.querySelector(`[name="${id}_modem"]`)?.value || '')],
         ['Operador', el.querySelector(`[name="${id}_operador"]`)?.value || ''],
-        ['APN', el.querySelector(`[name="${id}_apn"]`)?.value || ''],
-        [
-          'APN usuario/password',
-          (() => {
-            const u = el.querySelector(`[name="${id}_apn_user"]`)?.value || '';
-            const p = el.querySelector(`[name="${id}_apn_pass"]`)?.value || '';
-            return u || p ? `${u} / ${p}` : '—';
-          })(),
-        ],
         ['Señal (dBm)', el.querySelector(`[name="${id}_rssi"]`)?.value || ''],
         ['Velocidad', velNA ? 'No aplica' : (el.querySelector(`[name="${id}_vel"]`)?.value || '')],
         ['Potencia radioenlace (dBm)', radioNA ? 'No aplica' : (el.querySelector(`[name="${id}_radio"]`)?.value || '')],
@@ -151,7 +133,6 @@
       });
       y0 = doc.lastAutoTable.finalY + 8;
 
-      // Pruebas
       const tests = [
         ['Vista en vivo', el.querySelector(`#${id}_t_vivo`)?.checked ? 'Sí' : 'No'],
         ['Notificaciones en la app del cliente', el.querySelector(`#${id}_t_noti`)?.checked ? 'Sí' : 'No'],
@@ -165,12 +146,11 @@
         body: tests,
         theme: 'grid',
         styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [245, 158, 11] },
+        headStyles: { fillColor: [37, 99, 235] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 10;
 
-      // Fotos
       const keys = ['Poste', 'Vivo', 'Carga', 'Fij', 'Senal', 'CamPoste'];
       const items = [];
       for (const k of keys) {
@@ -186,39 +166,42 @@
         doc.text(clean('Fotos'), M, y0);
         y0 += 6;
 
-        const size = 110,
-          gap = 10;
-        let x = M,
-          rowH = size + 22;
+        const size = 110, gap = 10;
+        let x = M, rowH = size + 22;
+
         for (const it of items) {
           if (x + size > pageW - M) {
             x = M;
             y0 += rowH;
           }
           if (y0 + size + 18 > pageH - M) {
-            // cerrar marco de bloque y nueva página
             const blockY = y + 2;
             const blockH = y0 - y + 10;
+
             doc.setLineWidth(0.8);
             doc.setDrawColor(0, 0, 0);
             doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
             doc.setLineWidth(0.6);
-            doc.setDrawColor(245, 158, 11);
+            doc.setDrawColor(37, 99, 235);
             doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
             doc.addPage();
             y = M;
             y0 = y + padTop;
+
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
             doc.text(clean(`${el.querySelector('.cam-title').textContent} (cont.)`), M, y0);
             y0 += 12;
+
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.text(clean('Fotos (cont.)'), M, y0);
             y0 += 6;
+
             x = M;
           }
+
           doc.addImage(it.data, 'JPEG', x, y0, size, size);
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9.5);
@@ -228,20 +211,18 @@
         y0 += rowH;
       }
 
-      // Marco del bloque de la cámara
       const blockY = y + 2;
       const blockH = y0 - y + 8;
       doc.setLineWidth(0.8);
       doc.setDrawColor(0, 0, 0);
       doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
       doc.setLineWidth(0.6);
-      doc.setDrawColor(245, 158, 11);
+      doc.setDrawColor(37, 99, 235);
       doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
       y = blockY + blockH + 12;
     }
 
-    // Observaciones
     if (y > pageH - 200) {
       doc.addPage();
       y = M;
@@ -250,16 +231,17 @@
     doc.setFontSize(12);
     doc.text(clean('Observaciones generales'), M, y);
     y += 12;
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.text(doc.splitTextToSize(clean($('#obs')?.value || '—'), pageW - 2 * M), M, y);
     y += 36;
 
-    // Calidad
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
     doc.text(clean('Calidad y seguridad'), M, y);
     y += 10;
+
     const qual = [
       ['Conexiones y cableado OK', $('#okCableado')?.checked ? 'Sí' : 'No'],
       ['Montura verificada', $('#okMontura')?.checked ? 'Sí' : 'No'],
@@ -274,7 +256,6 @@
     });
     y = doc.lastAutoTable.finalY + 18;
 
-    // Cierre técnico + firma
     if (y > pageH - 180) {
       doc.addPage();
       y = M;
@@ -285,9 +266,6 @@
     y += 10;
 
     const sig = $('#canvasFirm');
-    const dni = clean($('#dniTec')?.value || '');
-    const hIni = clean($('#horaIni')?.value || '');
-    const hFin = clean($('#horaFin')?.value || '');
     const horaConf = clean($('#horaConf')?.value || '');
     const validador = clean($('#validador')?.value || '');
     const confOf = $('#confOficina')?.checked ? 'Sí' : 'No';
@@ -295,23 +273,19 @@
     if (sig && sig.width && sig.height) {
       const data = sig.toDataURL('image/png');
       doc.addImage(data, 'PNG', M, y, 220, 110);
+
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text(clean(`DNI: ${dni}`), M + 240, y + 24);
-      doc.text(clean(`Hora inicio: ${hIni}`), M + 240, y + 44);
-      doc.text(clean(`Hora fin: ${hFin}`), M + 240, y + 64);
-      doc.text(clean(`Confirmación oficina: ${confOf}`), M + 240, y + 84);
-      if (horaConf) doc.text(clean(`Hora confirmación: ${horaConf}`), M + 240, y + 104);
-      if (validador) doc.text(clean(`Validador: ${validador}`), M + 240, y + 124);
+      doc.text(clean(`Confirmación oficina: ${confOf}`), M + 240, y + 24);
+      if (horaConf) doc.text(clean(`Hora confirmación: ${horaConf}`), M + 240, y + 44);
+      if (validador) doc.text(clean(`Validador: ${validador}`), M + 240, y + 64);
     }
 
-    // Footer
     doc.setDrawColor(229, 231, 235);
     doc.line(M, pageH - 48, pageW - M, pageH - 48);
     doc.setFontSize(9.5);
     doc.text(clean(`Generado — ${new Date().toLocaleString()}`), M, pageH - 34);
 
-    // → devolvemos Blob
     return doc.output('blob');
   }
 
@@ -327,7 +301,6 @@
   }
 
   async function compartirWhatsApp(blob, filename) {
-    // 1) Intento compartir el archivo con Web Share
     try {
       const file = new File([blob], filename, { type: 'application/pdf' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -338,16 +311,12 @@
         });
         return;
       }
-    } catch (e) {
-      // sigue con fallback
-    }
+    } catch (e) {}
 
-    // 2) Fallback: abrir chat con texto (sin adjunto en desktop/web)
     const url = `https://wa.me/${WA_NUMBER_INTL}?text=${encodeURIComponent(WA_TEXT)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
-  // API pública
   window.generarPDFyCompartir = async function () {
     const dateStr = $('#fechaInst')?.value || new Date().toISOString().slice(0, 10);
     const filename = `parte-instalacion-${dateStr}.pdf`;
