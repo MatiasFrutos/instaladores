@@ -532,3 +532,55 @@ canvas#canvasFirm{
   .brand__title{ font-size: 1.15rem; }
   .brand__kicker{ font-size: .88rem; }
 }
+/* =========================================================
+   FIX MOBILE — Labels largos + "No aplica" desalineado
+   ========================================================= */
+
+/* Contenedor label + NA */
+.label-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+
+/* Texto del label puede wrapear sin romper layout */
+.label-row > label:first-child{
+  min-width:0;
+  flex:1;
+}
+
+/* --- MOBILE REAL --- */
+@media (max-width: 720px){
+
+  /* Label + NA pasan a vertical */
+  .label-row{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  /* "No aplica" alineado y respirable */
+  .label-row .na{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    font-size: .95rem;
+    margin-top: 2px;
+  }
+
+  /* Evita que el checkbox quede flotando */
+  .label-row .na input[type="checkbox"]{
+    margin: 0;
+  }
+
+  /* Grupos de checks técnicos (Ubicación / Revisión / etc.) */
+  .checks .check{
+    align-items:flex-start;
+    gap: 10px;
+  }
+
+  .checks .check span{
+    line-height: 1.3;
+  }
+}
