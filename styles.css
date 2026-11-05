@@ -1497,3 +1497,6 @@ dialog::backdrop {
 .photo-cell .field-help {
   font-size: 11px;
 }
+
+.delivery { grid-template-columns: minmax(0, 1fr); }
+.delivery p { max-width: 65ch; }

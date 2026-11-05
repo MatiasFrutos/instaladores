@@ -5,13 +5,9 @@ import hmac
 import json
 import os
 from pathlib import Path
-import re
 import secrets
-import smtplib
-import ssl
 import threading
 import time
-from email.message import EmailMessage
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
@@ -25,7 +21,7 @@ STATIC = {'index.html', 'styles.css', 'portal.js', 'app.utils.js', 'app.ui.js', 
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
-        # Do not log request bodies, codes, email addresses or cookies.
+        # Do not log request bodies, codes or cookies.
         super().log_message(fmt, *args)
 
     def reply(self, status, data, cookie=None):
@@ -101,8 +97,6 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(200, {'ok': True}, f'agro_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0{secure}')
         if path == '/api/reports':
             return self.save_report(body)
-        if re.fullmatch(r'/api/reports/[a-f0-9]{32}/email', path):
-            return self.send_email(path.split('/')[3], body)
         return self.reply(404, {'error': 'No encontrado.'})
 
     def save_report(self, body):
@@ -136,29 +130,6 @@ class Handler(BaseHTTPRequestHandler):
             if target.exists(): shutil.rmtree(target)
             return self.reply(507, {'error': 'No se pudo guardar. Revisá el espacio y permisos del servidor.'})
         return self.reply(201, {'id': report_id, 'photos': len(decoded)})
-
-    def send_email(self, report_id, body):
-        recipient = body.get('email', '')
-        if not isinstance(recipient, str) or not re.fullmatch(r'[^\s@<>\r\n]+@[^\s@<>\r\n]+\.[^\s@<>\r\n]+', recipient) or len(recipient)>254:
-            return self.reply(400, {'error': 'Ingresá un correo válido.'})
-        pdf = DATA / report_id / 'parte.pdf'
-        if not pdf.is_file(): return self.reply(404, {'error': 'El parte no existe.'})
-        if not os.environ.get('SMTP_HOST') or not os.environ.get('SMTP_FROM'):
-            return self.reply(503, {'error': 'Correo no configurado en el servidor. El parte está guardado; podés descargar el PDF.'})
-        message = EmailMessage()
-        message['Subject'] = 'Parte de instalación · Agronomía Inteligente'
-        message['From'] = os.environ['SMTP_FROM']
-        message['To'] = recipient
-        message.set_content('Adjuntamos el parte de instalación.\nAgronomía Inteligente SRL')
-        message.add_attachment(pdf.read_bytes(), maintype='application', subtype='pdf', filename='parte-instalacion.pdf')
-        try:
-            with smtplib.SMTP(os.environ['SMTP_HOST'], int(os.environ.get('SMTP_PORT', '587')), timeout=30) as smtp:
-                smtp.starttls(context=ssl.create_default_context())
-                if os.environ.get('SMTP_USER'): smtp.login(os.environ['SMTP_USER'], os.environ.get('SMTP_PASSWORD', ''))
-                smtp.send_message(message)
-        except (OSError, smtplib.SMTPException, ValueError):
-            return self.reply(502, {'error': 'El correo no pudo enviarse. El parte sigue guardado. Podés volver a intentar o descargarlo.'})
-        return self.reply(200, {'ok': True})
 
 if __name__ == '__main__':
     os.umask(0o077)

@@ -1,4 +1,4 @@
-"""Pruebas locales de acceso, persistencia y entrega. No envían correo real."""
+"""Pruebas locales de acceso, persistencia y entrega. Sin servicios externos."""
 import base64
 import http.client
 import json
@@ -55,7 +55,7 @@ class PortalTests(unittest.TestCase):
         self.assertEqual(self.request('/api/logout', {})[0], 200)
         self.assertEqual(self.request('/api/session')[0], 401)
 
-    def test_report_persistence_and_email(self):
+    def test_report_persistence_and_no_email_endpoint(self):
         self.login()
         status, result = self.request('/api/reports', self.report())
         self.assertEqual(status, 201)
@@ -63,15 +63,8 @@ class PortalTests(unittest.TestCase):
         self.assertTrue((directory/'parte.pdf').read_bytes().startswith(b'%PDF-'))
         self.assertEqual(len(json.loads((directory/'parte.json').read_text())['photos']),1)
         self.assertTrue((directory/'foto-001.jpg').exists())
-        with patch.dict(server.os.environ, {'SMTP_HOST':'', 'SMTP_FROM':''}):
-            self.assertEqual(self.request(f"/api/reports/{result['id']}/email", {'email':'test@example.com'})[0],503)
-        with patch.dict(server.os.environ, {'SMTP_HOST':'smtp.example.com', 'SMTP_FROM':'office@example.com'}), patch.object(server.smtplib, 'SMTP') as smtp:
-            self.assertEqual(self.request(f"/api/reports/{result['id']}/email", {'email':'test@example.com'})[0],200)
-            client = smtp.return_value.__enter__.return_value
-            client.starttls.assert_called_once()
-            message = client.send_message.call_args.args[0]
-            self.assertEqual(message['To'],'test@example.com')
-            self.assertEqual(next(message.iter_attachments()).get_payload(decode=True),(directory/'parte.pdf').read_bytes())
+        self.assertEqual(self.request(f"/api/reports/{result['id']}/email", {'email':'test@example.com'})[0],404)
+        self.assertEqual(self.request(f"/{result['id']}/parte.pdf")[0],404)
 
     def test_invalid_files_and_login_throttle(self):
         self.login()

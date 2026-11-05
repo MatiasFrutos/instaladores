@@ -18,7 +18,6 @@
     confOficina: 'Obligatorio para cerrar: marcá solo cuando alguien de oficina te confirme que ve las cámaras remotamente.',
     validador: 'Nombre y apellido de quien, desde oficina, te confirmó que puede ver las cámaras. No es el nombre del técnico en campo.',
     horaConf: 'Hora local en la que esa persona de oficina te dio la confirmación.',
-    reportEmail: 'Correo de la persona que debe recibir el PDF. Completalo solo si vas a usar “Enviar por correo”.',
     accessCode: 'Usá el código de acceso compartido con tu equipo. No necesitás usuario ni correo.',
     tipo: 'Obligatorio: elegí si instalaste una cámara o hiciste soporte, y si el equipo es nuevo o ya estaba instalado.',
     estructura: 'Elegí dónde quedó fijada la cámara: torre, poste, columna o techo.',
@@ -174,31 +173,27 @@
     $('#storageStatus').textContent = `Parte guardado · ${saved.photos} fotos respaldadas en el servidor.`;
     return lastReport;
   }
-  async function finish(email) {
+  async function finish() {
     if (busy) return;
     if (!window.validarParte()) {
       showStep($('#formMsg').textContent.includes('Oficina') ? 3 : 1);
       $('#formMsg').scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
-    if (email && (!$('#reportEmail').value || !$('#reportEmail').checkValidity())) {
-      $('#reportEmail').reportValidity(); window.msg('err', 'Ingresá el correo del destinatario.'); return;
-    }
     busy = true;
     const controls = [...document.querySelectorAll('#formInstalacion input, #formInstalacion select, #formInstalacion textarea, #formInstalacion button, .steps button, .step-navigation button, #logout')];
     const enabled = controls.filter(el => !el.disabled);
     enabled.forEach(el => el.disabled = true);
     $('#formInstalacion').classList.add('saving');
-    window.msg('', email ? 'Guardando y enviando…' : 'Guardando el parte…');
+    window.msg('', 'Guardando el parte…');
     try {
       const report = await prepare();
-      if (email) { await api(`/api/reports/${report.id}/email`, {email:$('#reportEmail').value.trim()}); window.msg('ok', 'Parte guardado y correo enviado.'); }
-      else { await window.descargarPDF(report.blob, `parte-instalacion-${$('#fechaInst').value}.pdf`); window.msg('ok', 'Parte guardado. PDF descargado.'); }
+      await window.descargarPDF(report.blob, `parte-instalacion-${$('#fechaInst').value}.pdf`);
+      window.msg('ok', 'Parte guardado en el servidor. PDF descargado.');
     } catch (err) {
       window.msg('err', err.message);
       if (!lastReport) $('#storageStatus').textContent = 'No se confirmó el guardado. Conservá esta pestaña abierta para volver a intentar.';
     } finally { busy = false; enabled.forEach(el => el.disabled = false); $('#formInstalacion').classList.remove('saving'); }
   }
-  $('#btnEnviar').onclick = () => finish(false);
-  $('#btnEmail').onclick = () => finish(true);
+  $('#btnEnviar').onclick = () => finish();
 })();
