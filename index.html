@@ -8,8 +8,15 @@
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <div class="app">
+<body class="locked">
+  <main id="loginScreen" class="login-screen">
+    <div class="login-brand"><img src="logo.png" alt="Agronomía Inteligente" /><span>AGRONOMÍA<br>INTELIGENTE</span></div>
+    <div class="login-card"><span class="eyebrow">PORTAL DE TÉCNICOS</span><h1>Todo listo.<br>Vamos al campo.</h1><p>Tu trabajo, documentado de principio a fin.</p>
+      <form id="loginForm"><label for="accessCode">Código de acceso</label><input id="accessCode" type="password" autocomplete="current-password" required placeholder="Ingresá tu código" /><button class="btn primary" type="submit">Ingresar al portal <span>→</span></button><p id="loginMsg" role="alert"></p></form>
+      <small>Un acceso simple. Toda la información en un lugar.</small>
+    </div><div class="login-foot">TECNOLOGÍA QUE ACOMPAÑA TU TRABAJO.</div>
+  </main>
+  <div class="app" inert>
     <header class="topbar">
       <div class="brand">
         <img id="logoImg" class="brand__logo" src="logo.png" alt="Logo" />
@@ -23,18 +30,20 @@
       <div class="topbar__meta">
         <div class="pill">
           <span class="dot" aria-hidden="true"></span>
-          <span>Formulario</span>
+          <span id="connectionStatus">En línea</span>
         </div>
-        <div class="pill mono" id="todayPill">—</div>
+        <div class="pill mono" id="todayPill">—</div><button id="logout" class="btn ghost" type="button">Salir</button>
       </div>
     </header>
 
     <main class="content">
+      <div class="work-heading"><div><span class="eyebrow">ESPACIO DE TRABAJO</span><h2>Un buen trabajo.<br>Un registro impecable.</h2><p>Completá el parte, sumá las fotos y cerrá la visita.</p></div><div class="draft-badge">Borrador local · sin fotos</div></div>
+      <nav class="steps" aria-label="Pasos del parte"><button type="button" data-step="0"><b>01</b> Servicio</button><button type="button" data-step="1"><b>02</b> Cámaras</button><button type="button" data-step="2"><b>03</b> Revisión</button><button type="button" data-step="3"><b>04</b> Finalizar</button></nav>
       <form id="formInstalacion" class="panel" onsubmit="return false">
-        <!-- A) Datos del servicio -->
+        <!-- Datos del servicio -->
         <div class="section">
           <div class="section__head">
-            <h2 class="section__title">A) Datos del servicio</h2>
+            <h2 class="section__title">Datos del servicio</h2>
             <p class="section__hint">Información base para identificar cliente, visita y responsable técnico.</p>
           </div>
 
@@ -72,10 +81,10 @@
           </div>
         </div>
 
-        <!-- B) Cámaras -->
+        <!-- Cámaras y evidencia -->
         <div class="section">
           <div class="section__head">
-            <h2 class="section__title">B) Cámaras</h2>
+            <h2 class="section__title">Cámaras y evidencia</h2>
             <p class="section__hint">Agregá una tarjeta por cámara instalada/soportada. Las fotos van por cámara.</p>
           </div>
 
@@ -86,10 +95,10 @@
           </div>
         </div>
 
-        <!-- C) Observaciones -->
+        <!-- Revisión de la visita -->
         <div class="section">
           <div class="section__head">
-            <h2 class="section__title">C) Observaciones</h2>
+            <h2 class="section__title">Revisión de la visita</h2>
             <p class="section__hint">Notas operativas: contexto, decisiones, excepciones, detalles relevantes.</p>
           </div>
 
@@ -97,7 +106,7 @@
             <label>Comentarios / Observaciones</label>
             <textarea id="obs" rows="4" placeholder="Notas generales..."></textarea>
             <div class="field__meta">
-              <small class="muted">Recomendación: registrar cambios, incidentes y pruebas.</small>
+              <small class="muted">Registrá cualquier detalle que deba conocer oficina.</small>
               <small id="countObs" class="mono">0/800</small>
             </div>
           </div>
@@ -118,11 +127,11 @@
           </div>
         </div>
 
-        <!-- D) Cierre del técnico -->
+        <!-- Todo listo para cerrar -->
         <div class="section">
           <div class="section__head">
-            <h2 class="section__title">D) Cierre del técnico</h2>
-            <p class="section__hint">Validación de oficina + responsable. (Horas removidas, como pediste).</p>
+            <h2 class="section__title">Todo listo para cerrar</h2>
+            <p class="section__hint">Confirmá con oficina, firmá y elegí cómo entregar el parte.</p>
           </div>
 
           <div class="grid">
@@ -151,7 +160,7 @@
             <div class="signature__head">
               <div>
                 <div class="signature__title">Firma del técnico</div>
-                <div class="signature__sub muted">Usá mouse o táctil. Recomendación: firmar a pantalla completa en móvil.</div>
+                <div class="signature__sub muted">Firmá con el dedo o con el mouse.</div>
               </div>
               <button id="btnClearFirm" class="btn ghost" type="button">Limpiar</button>
             </div>
@@ -159,17 +168,19 @@
           </div>
         </div>
 
+        <div class="delivery"><div><span class="eyebrow">ENTREGA DEL PARTE</span><h3>Tu visita, respaldada.</h3><p id="storageStatus" role="status">Las fotos y el PDF se guardan en el servidor al finalizar. Necesitás conexión.</p></div><div class="field"><label for="reportEmail">Enviar una copia por correo</label><input id="reportEmail" type="email" placeholder="oficina@empresa.com" autocomplete="email" /><small class="muted">Opcional. También podés descargar el PDF.</small></div></div>
         <!-- Acciones -->
         <div class="bar">
           <div class="bar__left">
-            <div id="formMsg"></div>
+            <div id="formMsg" role="status" aria-live="polite"></div>
           </div>
           <div class="bar__right">
             <button id="btnReset" class="btn ghost" type="reset">Limpiar todo</button>
-            <button id="btnEnviar" class="btn primary" type="button">Generar PDF</button>
+            <button id="btnEmail" class="btn ghost" type="button">Enviar por correo</button><button id="btnEnviar" class="btn primary" type="button">Guardar y descargar PDF ↓</button>
           </div>
         </div>
       </form>
+      <div class="step-navigation"><button id="prevStep" class="btn ghost" type="button">← Anterior</button><span id="stepCount"></span><button id="nextStep" class="btn primary" type="button">Continuar →</button></div>
 
       <footer class="footer">
         © <span id="year">2025</span> Agronomía Inteligente SRL
@@ -185,6 +196,7 @@
   <script defer src="app.utils.js"></script>
   <script defer src="app.pdf.js"></script>
   <script defer src="app.ui.js"></script>
+  <script defer src="portal.js"></script>
 
   <script>
     // solo cosmetico (no lógica de negocio)

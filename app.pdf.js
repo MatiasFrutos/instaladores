@@ -1,8 +1,6 @@
 /* ===== PDF + compartir por WhatsApp (sin emojis en el PDF) ===== */
 
 (function () {
-  const WA_NUMBER_INTL = '5491160301418'; // +54 9 11 6030-1418 (sin símbolos)
-  const WA_TEXT = 'Hola, te envío el parte de instalación.';
 
   function stripEmoji(str = '') {
     return String(str).replace(
@@ -16,7 +14,7 @@
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
   function readImageAsDataURL(file, maxW = 720, quality = 0.82) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (!file) return resolve(null);
       const img = new Image(), fr = new FileReader();
       fr.onload = () => (img.src = fr.result);
@@ -28,6 +26,7 @@
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
         resolve(c.toDataURL('image/jpeg', quality));
       };
+      img.onerror = fr.onerror = () => reject(new Error('No se pudo leer una foto. Elegí una imagen JPEG o PNG válida.'));
       fr.readAsDataURL(file);
     });
   }
@@ -47,7 +46,7 @@
     doc.text(clean('Agronomía Inteligente SRL — Parte de instalación'), M, y);
     y += 22;
 
-    doc.setDrawColor(37, 99, 235);
+    doc.setDrawColor(36, 91, 64);
     doc.setLineWidth(2);
     doc.line(M, y, pageW - M, y);
     y += 16;
@@ -66,7 +65,7 @@
       body: A,
       theme: 'grid',
       styles: { fontSize: 9.5, cellPadding: 5 },
-      headStyles: { fillColor: [37, 99, 235] },
+      headStyles: { fillColor: [36, 91, 64] },
       margin: { left: M, right: M },
     });
     y = doc.lastAutoTable.finalY + 12;
@@ -99,7 +98,7 @@
         body: A0.map(([k, v]) => [clean(k), clean(String(v))]),
         theme: 'grid',
         styles: { fontSize: 9.5, cellPadding: 4 },
-        headStyles: { fillColor: [37, 99, 235] },
+        headStyles: { fillColor: [36, 91, 64] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 8;
@@ -146,7 +145,7 @@
         body: tests,
         theme: 'grid',
         styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [37, 99, 235] },
+        headStyles: { fillColor: [36, 91, 64] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 10;
@@ -182,7 +181,7 @@
             doc.setDrawColor(0, 0, 0);
             doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
             doc.setLineWidth(0.6);
-            doc.setDrawColor(37, 99, 235);
+            doc.setDrawColor(36, 91, 64);
             doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
             doc.addPage();
@@ -217,7 +216,7 @@
       doc.setDrawColor(0, 0, 0);
       doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
       doc.setLineWidth(0.6);
-      doc.setDrawColor(37, 99, 235);
+      doc.setDrawColor(36, 91, 64);
       doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
       y = blockY + blockH + 12;
@@ -300,29 +299,6 @@
     URL.revokeObjectURL(url);
   }
 
-  async function compartirWhatsApp(blob, filename) {
-    try {
-      const file = new File([blob], filename, { type: 'application/pdf' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'Parte de instalación',
-          text: WA_TEXT,
-        });
-        return;
-      }
-    } catch (e) {}
-
-    const url = `https://wa.me/${WA_NUMBER_INTL}?text=${encodeURIComponent(WA_TEXT)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-
-  window.generarPDFyCompartir = async function () {
-    const dateStr = $('#fechaInst')?.value || new Date().toISOString().slice(0, 10);
-    const filename = `parte-instalacion-${dateStr}.pdf`;
-
-    const blob = await generarPDFBlob();
-    await descargar(blob, filename);
-    await compartirWhatsApp(blob, filename);
-  };
+  window.crearPDF = generarPDFBlob;
+  window.descargarPDF = descargar;
 })();

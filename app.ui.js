@@ -467,16 +467,19 @@
     return true;
   }
 
-  document.getElementById('btnEnviar')?.addEventListener('click', async ()=>{
+  window.validarParte = () => {
+    if (!validarPrevios()) return false;
     const form = document.getElementById('formInstalacion');
-    if (!form.checkValidity()){ form.reportValidity(); return msg('err','Completá los campos requeridos.'); }
-    if (!validarPrevios()) return;
-
-    try{
-      await window.generarPDFyCompartir();
-      msg('ok','PDF generado y descargado. Abrí WhatsApp para enviar (si no se abrió solo).');
-    }catch(e){ console.error(e); msg('err','No se pudo generar/compartir el PDF.'); }
-  });
+    if (!form.checkValidity()) {
+      const invalid = form.querySelector(':invalid');
+      invalid?.closest('.section')?.dispatchEvent(new CustomEvent('show-section', {bubbles:true}));
+      form.reportValidity();
+      msg('err','Completá los campos requeridos.');
+      return false;
+    }
+    return true;
+  };
+  window.datosParte = serialize;
 
   /* ===== Limpiar todo ===== */
   document.getElementById('btnReset')?.addEventListener('click', ()=>{
@@ -517,8 +520,13 @@
       const dpr = window.devicePixelRatio || 1;
       const w = canvas.clientWidth;
       const h = canvas.clientHeight || 180;
+      if (!w || !canvas.clientHeight) return;
+      const previous = document.createElement('canvas');
+      previous.width = canvas.width; previous.height = canvas.height;
+      previous.getContext('2d').drawImage(canvas, 0, 0);
       canvas.width  = Math.max(1, Math.floor(w * dpr));
       canvas.height = Math.max(1, Math.floor(h * dpr));
+      ctx.drawImage(previous, 0, 0, canvas.width, canvas.height);
       ctx.setTransform(dpr,0,0,dpr,0,0);
       ctx.lineWidth = 2;
       ctx.lineCap   = 'round';
@@ -537,7 +545,7 @@
     };
 
     const down = (e)=>{ drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); };
-    const move = (e)=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); };
+    const move = (e)=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); canvas.dispatchEvent(new Event('input', {bubbles:true})); e.preventDefault(); };
     const up   = ()=>{ drawing=false; };
 
     canvas.addEventListener('pointerdown', down);

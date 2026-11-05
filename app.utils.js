@@ -29,7 +29,7 @@ window.toDMS = (dec, isLat=true)=>{
 
 /* Imagen -> dataURL redimensionada */
 window.readImageAsDataURL = (file, maxW=720, quality=.82)=>{
-  return new Promise(resolve=>{
+  return new Promise((resolve, reject)=>{
     if(!file) return resolve(null);
     const img=new Image(), fr=new FileReader();
     fr.onload=()=> img.src=fr.result;
@@ -39,6 +39,7 @@ window.readImageAsDataURL = (file, maxW=720, quality=.82)=>{
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       resolve(c.toDataURL('image/jpeg',quality));
     };
+    img.onerror = fr.onerror = () => reject(new Error('No se pudo leer una foto. Elegí una imagen JPEG o PNG válida.'));
     fr.readAsDataURL(file);
   });
 };
