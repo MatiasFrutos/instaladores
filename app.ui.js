@@ -66,7 +66,7 @@
   function planChunk(id) {
     return `
     <div class="block">
-      <div class="subttl">A0) Parámetros técnicos</div>
+      <div class="subttl">Trabajo y lugar de montaje</div>
 
       <div class="grid">
         <div class="field">
@@ -186,7 +186,7 @@
 
       <div class="grid">
         <div class="field">
-          <label>Tipo de conexión</label>
+          <label>Fuente de alimentación de la cámara</label>
           <select name="${id}_conexion" class="ctl">
             <option value="">— Elegí —</option>
             <option>Solar</option><option>220 V</option>
@@ -214,7 +214,7 @@
           </div>
 
           <div class="field">
-            <label>Señal (dBm)</label>
+            <label>Señal celular (dBm)</label>
             <input type="text" name="${id}_rssi" placeholder="-75 / -100" class="ctl"/>
           </div>
         </div>
@@ -222,7 +222,7 @@
         <div class="grid">
           <div class="field">
             <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>Velocidad (Mbps up/down)</label>
+              <label>Velocidad de internet: subida / bajada (Mbps)</label>
               <label class="na muted"><input type="checkbox" id="${id}_vel_na"/> No aplica</label>
             </div>
             <input type="text" name="${id}_vel" placeholder="ej: 8 / 3" class="ctl"/>
@@ -230,7 +230,7 @@
 
           <div class="field">
             <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>Potencia radioenlace (dBm)</label>
+              <label>Señal del radioenlace (dBm)</label>
               <label class="na muted"><input type="checkbox" id="${id}_radio_na"/> No aplica</label>
             </div>
             <input type="text" name="${id}_radio" placeholder="ej: -60" class="ctl"/>
@@ -240,7 +240,7 @@
         <div class="grid">
           <div class="field">
             <div class="label-row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <label>Tensión (V)</label>
+              <label>Tensión medida (V)</label>
               <label class="na muted"><input type="checkbox" id="${id}_volt_na"/> No aplica</label>
             </div>
             <input type="text" name="${id}_volt" placeholder="ej: 12.0" class="ctl"/>

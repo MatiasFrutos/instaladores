@@ -14,6 +14,8 @@ El código inicial es **Agro2026!**. Se valida en el servidor y crea una sesión
 1. Ingresar con el código y completar los cuatro pasos.
 2. Agregar cámaras, fotos y firma. El borrador de texto se conserva en ese navegador; **las fotos y la firma no se restauran al recargar**. Mantener la pestaña abierta hasta guardar.
 3. Confirmar con oficina y elegir guardar y descargar o enviar por correo.
+El PDF usa encabezados y tablas en escala de grises, numeración en todas las páginas y una foto grande por página, sin recortarla ni deformarla. Cada imagen identifica a qué cámara pertenece.
+
 4. El servidor guarda PDF, fotos JPEG comprimidas (hasta 1600 px) y metadatos en `../instaladores-data/<identificador>/`. `DATA_DIR` permite elegir otra carpeta. No está expuesta como carpeta pública. Límite por solicitud: 32 MB y 120 fotos.
 
 La aplicación requiere conexión al servidor para iniciar sesión y guardar; descarga jsPDF y AutoTable desde jsDelivr. No es una aplicación offline. Compartir un código da acceso al mismo portal: no hay usuarios individuales ni separación por técnico.

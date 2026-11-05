@@ -1,304 +1,140 @@
-/* ===== PDF + compartir por WhatsApp (sin emojis en el PDF) ===== */
-
+/* Parte técnico: composición editorial en escala de grises y fotos a página completa. */
 (function () {
-
-  function stripEmoji(str = '') {
-    return String(str).replace(
-      /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDDFF]|[\u2190-\u21FF]|[\u2600-\u26FF])/g,
-      ''
-    );
-  }
-  const clean = (v) => stripEmoji(v ?? '');
-
   const $ = (s, c = document) => c.querySelector(s);
-  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const clean = value => window.sanitizeForPDF(String(value ?? ''));
+  const value = id => document.getElementById(id)?.value?.trim() || 'Sin registrar';
+  const yes = element => element?.checked ? 'Sí' : 'No';
 
-  function readImageAsDataURL(file, maxW = 720, quality = 0.82) {
-    return new Promise((resolve, reject) => {
-      if (!file) return resolve(null);
-      const img = new Image(), fr = new FileReader();
-      fr.onload = () => (img.src = fr.result);
-      img.onload = () => {
-        const scale = Math.min(1, maxW / img.width);
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * scale);
-        c.height = Math.round(img.height * scale);
-        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', quality));
-      };
-      img.onerror = fr.onerror = () => reject(new Error('No se pudo leer una foto. Elegí una imagen JPEG o PNG válida.'));
-      fr.readAsDataURL(file);
-    });
+  async function photoData(file) {
+    const url = await window.readImageAsDataURL(file, 1800, .9);
+    return url;
   }
 
   async function generarPDFBlob() {
     const { jsPDF } = window.jspdf || {};
-    if (!jsPDF) throw new Error('jsPDF no cargado');
-
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-    const pageW = doc.internal.pageSize.getWidth();
-    const pageH = doc.internal.pageSize.getHeight();
-    const M = 56;
-    let y = M;
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
-    doc.text(clean('Agronomía Inteligente SRL — Parte de instalación'), M, y);
-    y += 22;
-
-    doc.setDrawColor(230, 193, 0);
-    doc.setLineWidth(2);
-    doc.line(M, y, pageW - M, y);
-    y += 16;
-
-    const A = [
-      ['Cliente', clean($('#cliNombre')?.value || '')],
-      ['Teléfono', clean($('#cliTel')?.value || '')],
-      ['Dirección', clean($('#cliDireccion')?.value || '')],
-      ['Ciudad/Prov.', clean($('#cliCiudad')?.value || '')],
-      ['Técnico', clean($('#tecNombre')?.value || '')],
-      ['Fecha', clean($('#fechaInst')?.value || '')],
-    ];
-    doc.autoTable({
-      startY: y,
-      head: [[clean('A) Datos del servicio'), clean('Valor')]],
-      body: A,
-      theme: 'grid',
-      styles: { fontSize: 9.5, cellPadding: 5 },
-      headStyles: { fillColor: [16, 16, 16] },
-      margin: { left: M, right: M },
-    });
-    y = doc.lastAutoTable.finalY + 12;
-
-    for (const [i, el] of $$('.cam-card', $('#camList')).entries()) {
-      if (y > pageH - 280) {
-        doc.addPage();
-        y = M;
-      }
-      const id = el.dataset.cam;
-      const blockX = M - 6, blockW = pageW - 2 * M + 12;
-      const padTop = 18;
-      let y0 = y + padTop;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(clean(el.querySelector('.cam-title')?.textContent || `Cámara #${i + 1}`), M, y0);
-      y0 += 12;
-
-      const A0 = [
-        ['Tipo de trabajo', clean(el.querySelector(`#${id}_tipo`)?.value || '—')],
-        ['Estructura', clean(el.querySelector(`#${id}_estructura`)?.value || '—')],
-        ['Ubicación confirmada', el.querySelector(`#${id}_chkUbic`)?.checked ? 'Sí' : 'No'],
-        ['Revisión con imagen satelital', el.querySelector(`#${id}_chkSat`)?.checked ? 'Sí' : 'No'],
-        ['Herramientas básicas presentes', el.querySelector(`#${id}_chkHerr`)?.checked ? 'Sí' : 'No'],
-      ];
+    if (!jsPDF) throw new Error('No se cargó la biblioteca PDF. Revisá la conexión y volvé a intentar.');
+    const doc = new jsPDF({unit:'pt', format:'a4'});
+    doc.setProperties({title:'Parte de instalación', author:'Agronomía Inteligente SRL', subject:'Registro de visita técnica y evidencia fotográfica'});
+    const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+    const M = 48, contentW = W - 2*M;
+    let y = 104;
+    const timestamp = new Date().toLocaleString('es-AR');
+    function page() { doc.addPage(); y = 104; }
+    function title(text, detail) {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.setTextColor(25);
+      doc.text(clean(text), M, y); y += 19;
+      if (detail) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(85);
+        const lines = doc.splitTextToSize(clean(detail), contentW);
+        doc.text(lines, M, y); y += lines.length*12 + 10;
+      } else y += 8;
+    }
+    function table(rows, heading, compact = false) {
       doc.autoTable({
-        startY: y0,
-        head: [[clean('A0) Parámetros técnicos'), clean('Valor')]],
-        body: A0.map(([k, v]) => [clean(k), clean(String(v))]),
-        theme: 'grid',
-        styles: { fontSize: 9.5, cellPadding: 4 },
-        headStyles: { fillColor: [16, 16, 16] },
-        margin: { left: M, right: M },
+        startY:y, head:heading ? [[clean(heading), 'Detalle']] : undefined,
+        body:rows.map(row => row.map(clean)), theme:'plain',
+        styles:{font:'helvetica', fontSize:compact ? 9 : 10, cellPadding:compact ? 5 : 8, textColor:35, overflow:'linebreak', lineColor:225, lineWidth:{bottom:.4}},
+        headStyles:{fillColor:238, textColor:25, fontStyle:'bold'},
+        columnStyles:{0:{cellWidth:200, fontStyle:'bold', textColor:65},1:{cellWidth:contentW-200}},
+        rowPageBreak:'avoid', margin:{left:M,right:M,top:98,bottom:56},
       });
-      y0 = doc.lastAutoTable.finalY + 8;
+      y = doc.lastAutoTable.finalY + 22;
+    }
+    title('Datos del servicio', 'Identificación del cliente, lugar de la visita y técnico responsable.');
+    table([
+      ['Cliente',value('cliNombre')],['Teléfono de contacto',value('cliTel')],
+      ['Dirección / establecimiento',value('cliDireccion')],['Localidad y provincia',value('cliCiudad')],
+      ['Técnico responsable',value('tecNombre')],['Fecha de la visita',value('fechaInst')],
+      ['Cámaras registradas',String($$('.cam-card').length)],
+    ]);
 
-      const modemNA = el.querySelector(`#${id}_modem_na`)?.checked;
-      const radioNA = el.querySelector(`#${id}_radio_na`)?.checked;
-      const voltNA = el.querySelector(`#${id}_volt_na`)?.checked;
-      const velNA = el.querySelector(`#${id}_vel_na`)?.checked;
-
-      const body = [
-        ['Modelo', el.querySelector(`[name="${id}_modelo"]`)?.value || ''],
-        ['Serie', el.querySelector(`[name="${id}_serie"]`)?.value || ''],
-        ['Tipo de conexión', el.querySelector(`[name="${id}_conexion"]`)?.value || ''],
-        ['Módem (marca/modelo)', modemNA ? 'No aplica' : (el.querySelector(`[name="${id}_modem"]`)?.value || '')],
-        ['Operador', el.querySelector(`[name="${id}_operador"]`)?.value || ''],
-        ['Señal (dBm)', el.querySelector(`[name="${id}_rssi"]`)?.value || ''],
-        ['Velocidad', velNA ? 'No aplica' : (el.querySelector(`[name="${id}_vel"]`)?.value || '')],
-        ['Potencia radioenlace (dBm)', radioNA ? 'No aplica' : (el.querySelector(`[name="${id}_radio"]`)?.value || '')],
-        ['Tensión (V)', voltNA ? 'No aplica' : (el.querySelector(`[name="${id}_volt"]`)?.value || '')],
-        [
-          'Lat/Lon (GMS)',
-          `${el.querySelector(`[name="${id}_latGms"]`)?.value || ''} , ${el.querySelector(`[name="${id}_lonGms"]`)?.value || ''}`,
-        ],
-      ].map(([k, v]) => [clean(k), clean(v)]);
-      doc.autoTable({
-        startY: y0,
-        body,
-        theme: 'plain',
-        styles: { fontSize: 10, cellPadding: 3 },
-        margin: { left: M, right: M },
-      });
-      y0 = doc.lastAutoTable.finalY + 8;
-
-      const tests = [
-        ['Vista en vivo', el.querySelector(`#${id}_t_vivo`)?.checked ? 'Sí' : 'No'],
-        ['Notificaciones en la app del cliente', el.querySelector(`#${id}_t_noti`)?.checked ? 'Sí' : 'No'],
-        ['Micro SD grabando', el.querySelector(`#${id}_t_sd`)?.checked ? 'Sí' : 'No'],
-        ['Eventos / movimientos', el.querySelector(`#${id}_t_evt`)?.checked ? 'Sí' : 'No'],
-        ['Carga del panel solar', el.querySelector(`#${id}_t_panel`)?.checked ? 'Sí' : 'No'],
-      ].map(([k, v]) => [clean(k), clean(v)]);
-      doc.autoTable({
-        startY: y0,
-        head: [[clean('Prueba'), clean('OK')]],
-        body: tests,
-        theme: 'grid',
-        styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [16, 16, 16] },
-        margin: { left: M, right: M },
-      });
-      y0 = doc.lastAutoTable.finalY + 10;
-
-      const keys = ['Poste', 'Vivo', 'Carga', 'Fij', 'Senal', 'CamPoste'];
-      const items = [];
-      for (const k of keys) {
-        const inp = el.querySelector(`#${id}_${k}`);
-        const f = inp?.files?.[0];
-        if (!f) continue;
-        const data = await readImageAsDataURL(f, 420, 0.82);
-        items.push({ data, caption: clean(inp.dataset.caption || k) });
+    for (const [i, camera] of $$('.cam-card').entries()) {
+      page(); const id = camera.dataset.cam;
+      const input = suffix => camera.querySelector(`[name="${id}_${suffix}"]`);
+      const field = suffix => input(suffix)?.value?.trim() || 'Sin registrar';
+      const checked = suffix => camera.querySelector(`#${id}_${suffix}`);
+      const measurement = suffix => checked(`${suffix}_na`)?.checked ? 'No aplica' : field(suffix);
+      title(`Cámara ${i+1} | Registro técnico`);
+      table([
+        ['Trabajo realizado',camera.querySelector(`#${id}_tipo option:checked`)?.textContent || 'Sin registrar'],
+        ['Estructura de montaje',camera.querySelector(`#${id}_estructura`)?.value || 'Sin registrar'],
+        ['Modelo de cámara',field('modelo')],['Número de serie',field('serie')],
+        ['Fuente de alimentación',field('conexion')],['Marca y modelo del módem',measurement('modem')],
+        ['Operador de la SIM',field('operador')],['Señal celular (dBm)',field('rssi')],
+        ['Velocidad: subida / bajada (Mbps)',measurement('vel')],
+        ['Señal del radioenlace (dBm)',measurement('radio')],['Tensión medida (V)',measurement('volt')],
+        ['Latitud (grados, minutos y segundos)',field('latGms')],['Longitud (grados, minutos y segundos)',field('lonGms')],
+      ], undefined, true);
+      table([
+        ['Ubicación de montaje confirmada',yes(checked('chkUbic'))],['Ubicación revisada en mapa satelital',yes(checked('chkSat'))],
+        ['Herramientas necesarias disponibles',yes(checked('chkHerr'))],
+        ['Imagen en vivo comprobada',yes(checked('t_vivo'))],['Notificaciones de la app comprobadas',yes(checked('t_noti'))],
+        ['Grabación en microSD comprobada',yes(checked('t_sd'))],['Detección de movimiento comprobada',yes(checked('t_evt'))],
+        ['Carga del panel solar comprobada',yes(checked('t_panel'))],
+      ],'Comprobaciones realizadas', true);
+      const photos = $$('input[type=file]',camera).filter(el => el.files[0]);
+      for (const [index, input] of photos.entries()) {
+        page();
+        title(`Cámara ${i+1} | Evidencia ${index+1} de ${photos.length}`, input.dataset.caption);
+        const data = await photoData(input.files[0]);
+        const dimensions = doc.getImageProperties(data);
+        const availableH = H - 78 - y;
+        const scale = Math.min(contentW/dimensions.width, availableH/dimensions.height);
+        const width = dimensions.width*scale, height = dimensions.height*scale;
+        const x = M + (contentW-width)/2, imageY = y + (availableH-height)/2;
+        doc.addImage(data,'JPEG',x,imageY,width,height,undefined,'FAST');
       }
-      if (items.length) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text(clean('Fotos'), M, y0);
-        y0 += 6;
+    }
 
-        const size = 110, gap = 10;
-        let x = M, rowH = size + 22;
+    page(); title('Revisión y cierre de la visita');
+    table([['Observaciones del técnico',value('obs')]],'Observaciones');
+    table([
+      ['Conexiones y cableado revisados',yes($('#okCableado'))],
+      ['Montura y fijaciones revisadas',yes($('#okMontura'))],
+      ['Protección contra cotorras revisada',yes($('#okCotorra'))],
+    ],'Calidad de la instalación');
+    table([
+      ['Oficina confirmó que ve las cámaras',yes($('#confOficina'))],
+      ['Persona de oficina que confirmó',value('validador')],
+      ['Hora de confirmación de oficina',value('horaConf')],
+    ],'Confirmación de oficina');
+    if (y + 145 > H - 56) page();
+    doc.setFont('helvetica','bold'); doc.setTextColor(35); doc.setFontSize(11);
+    doc.text('Firma del técnico responsable',M,y); y += 12;
+    const canvas = $('#canvasFirm');
+    if (canvas?.width && canvas?.height) {
+      const width = Math.min(280,contentW), height = Math.min(100,width*canvas.height/canvas.width);
+      doc.addImage(canvas.toDataURL('image/png'),'PNG',M,y,width,height);
+    }
+    doc.setDrawColor(180); doc.setLineWidth(.5); doc.line(M,y+110,M+280,y+110);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(clean(value('tecNombre')),M,y+124);
 
-        for (const it of items) {
-          if (x + size > pageW - M) {
-            x = M;
-            y0 += rowH;
-          }
-          if (y0 + size + 18 > pageH - M) {
-            const blockY = y + 2;
-            const blockH = y0 - y + 10;
-
-            doc.setLineWidth(0.8);
-            doc.setDrawColor(0, 0, 0);
-            doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
-            doc.setLineWidth(0.6);
-            doc.setDrawColor(230, 193, 0);
-            doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
-
-            doc.addPage();
-            y = M;
-            y0 = y + padTop;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text(clean(`${el.querySelector('.cam-title').textContent} (cont.)`), M, y0);
-            y0 += 12;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.text(clean('Fotos (cont.)'), M, y0);
-            y0 += 6;
-
-            x = M;
-          }
-
-          doc.addImage(it.data, 'JPEG', x, y0, size, size);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9.5);
-          doc.text(doc.splitTextToSize(it.caption, size), x, y0 + size + 12);
-          x += size + gap;
-        }
-        y0 += rowH;
+    // Repeated, reserved header/footer on every page, including AutoTable continuations.
+    const count = doc.internal.getNumberOfPages();
+    const logo = $('#logoImg');
+    for (let number=1; number<=count; number++) {
+      doc.setPage(number);
+      if (logo?.complete && logo.naturalWidth) {
+        const height=42, width=height*logo.naturalWidth/logo.naturalHeight;
+        doc.addImage(logo,'PNG',M,25,width,height);
       }
-
-      const blockY = y + 2;
-      const blockH = y0 - y + 8;
-      doc.setLineWidth(0.8);
-      doc.setDrawColor(0, 0, 0);
-      doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
-      doc.setLineWidth(0.6);
-      doc.setDrawColor(230, 193, 0);
-      doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
-
-      y = blockY + blockH + 12;
+      doc.setTextColor(25); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.text(clean('AGRONOMÍA INTELIGENTE SRL'),W-M,37,{align:'right'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('Parte de instalación y servicio técnico',W-M,53,{align:'right'});
+      doc.setDrawColor(175); doc.setLineWidth(.6); doc.line(M,78,W-M,78);
+      doc.setDrawColor(210); doc.line(M,H-46,W-M,H-46);
+      doc.setTextColor(90); doc.setFontSize(8);
+      doc.text(clean(`Emitido: ${timestamp}`),M,H-30);
+      doc.text(`Página ${number} de ${count}`,W-M,H-30,{align:'right'});
     }
-
-    if (y > pageH - 200) {
-      doc.addPage();
-      y = M;
-    }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text(clean('Observaciones generales'), M, y);
-    y += 12;
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.text(doc.splitTextToSize(clean($('#obs')?.value || '—'), pageW - 2 * M), M, y);
-    y += 36;
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text(clean('Calidad y seguridad'), M, y);
-    y += 10;
-
-    const qual = [
-      ['Conexiones y cableado OK', $('#okCableado')?.checked ? 'Sí' : 'No'],
-      ['Montura verificada', $('#okMontura')?.checked ? 'Sí' : 'No'],
-      ['Protección contra cotorras', $('#okCotorra')?.checked ? 'Sí' : 'No'],
-    ].map(([k, v]) => [clean(k), clean(v)]);
-    doc.autoTable({
-      startY: y,
-      body: qual,
-      theme: 'plain',
-      styles: { fontSize: 10, cellPadding: 3 },
-      margin: { left: M, right: M },
-    });
-    y = doc.lastAutoTable.finalY + 18;
-
-    if (y > pageH - 180) {
-      doc.addPage();
-      y = M;
-    }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text(clean('Cierre del técnico'), M, y);
-    y += 10;
-
-    const sig = $('#canvasFirm');
-    const horaConf = clean($('#horaConf')?.value || '');
-    const validador = clean($('#validador')?.value || '');
-    const confOf = $('#confOficina')?.checked ? 'Sí' : 'No';
-
-    if (sig && sig.width && sig.height) {
-      const data = sig.toDataURL('image/png');
-      doc.addImage(data, 'PNG', M, y, 220, 110);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      doc.text(clean(`Confirmación oficina: ${confOf}`), M + 240, y + 24);
-      if (horaConf) doc.text(clean(`Hora confirmación: ${horaConf}`), M + 240, y + 44);
-      if (validador) doc.text(clean(`Validador: ${validador}`), M + 240, y + 64);
-    }
-
-    doc.setDrawColor(229, 231, 235);
-    doc.line(M, pageH - 48, pageW - M, pageH - 48);
-    doc.setFontSize(9.5);
-    doc.text(clean(`Generado — ${new Date().toLocaleString()}`), M, pageH - 34);
-
     return doc.output('blob');
   }
-
-  async function descargar(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
   window.crearPDF = generarPDFBlob;
-  window.descargarPDF = descargar;
+  window.descargarPDF = async (blob,filename) => {
+    const url=URL.createObjectURL(blob), link=document.createElement('a');
+    link.href=url; link.download=filename; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
 })();

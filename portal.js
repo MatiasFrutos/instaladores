@@ -3,6 +3,79 @@
   const $ = s => document.querySelector(s);
   const sections = [...document.querySelectorAll('#formInstalacion > .section')];
   let step = 0, busy = false, lastReport = null;
+  // Visible instructions, also linked to controls for screen readers.
+  const fieldHelp = {
+    cliNombre: 'Nombre de la persona o empresa para la que realizaste la visita.',
+    cliTel: 'Número de contacto del cliente, con código de área.',
+    cliDireccion: 'Lugar de instalación: calle y número, nombre del campo o referencia de acceso.',
+    cliCiudad: 'Localidad y provincia donde está la instalación.',
+    tecNombre: 'Tu nombre y apellido: sos la persona responsable de este parte.',
+    fechaInst: 'Día en que hiciste el trabajo. Cambialo si estás registrando una visita anterior.',
+    obs: 'Contá qué hiciste, qué problema encontraste y si queda algo pendiente. Máximo 800 caracteres.',
+    okCableado: 'Marcá si revisaste que los cables y las conexiones estén firmes y en buen estado.',
+    okMontura: 'Marcá si comprobaste que el soporte y las fijaciones de la cámara estén firmes.',
+    okCotorra: 'Marcá si verificaste la protección de cables y equipos contra daños de cotorras.',
+    confOficina: 'Obligatorio para cerrar: marcá solo cuando alguien de oficina te confirme que ve las cámaras remotamente.',
+    validador: 'Nombre y apellido de quien, desde oficina, te confirmó que puede ver las cámaras. No es el nombre del técnico en campo.',
+    horaConf: 'Hora local en la que esa persona de oficina te dio la confirmación.',
+    reportEmail: 'Correo de la persona que debe recibir el PDF. Completalo solo si vas a usar “Enviar por correo”.',
+    accessCode: 'Usá el código de acceso compartido con tu equipo. No necesitás usuario ni correo.',
+    tipo: 'Obligatorio: elegí si instalaste una cámara o hiciste soporte, y si el equipo es nuevo o ya estaba instalado.',
+    estructura: 'Elegí dónde quedó fijada la cámara: torre, poste, columna o techo.',
+    chkUbic: 'Marcá si confirmaste el punto físico donde debe instalarse o revisarse esta cámara.',
+    chkSat: 'Marcá si revisaste ese punto en un mapa con imagen satelital.',
+    chkHerr: 'Marcá si contaste con las herramientas necesarias para realizar el trabajo.',
+    modelo: 'Elegí el modelo que figura en la etiqueta o en la configuración de esta cámara.',
+    serie: 'Copiá el identificador único o número de serie de la etiqueta del equipo.',
+    conexion: 'Indica cómo recibe energía: panel solar o red eléctrica de 220 V. No es el tipo de conexión a internet.',
+    modem: 'Marca y modelo del equipo que da internet a esta cámara. Si no tiene módem, marcá “No aplica”.',
+    operador: 'Empresa de la tarjeta SIM que usa el módem para conectarse a internet.',
+    rssi: 'Valor de señal celular mostrado por el módem, en dBm. Ejemplo: -75. Copiá la medición sin convertirla.',
+    vel: 'Resultado de la prueba de internet: primero subida, luego bajada, en Mbps. Ejemplo: 3 / 8. Si no corresponde, marcá “No aplica”.',
+    radio: 'Valor de señal recibido que muestra el equipo de radioenlace, en dBm. Ejemplo: -60. Si no hay radioenlace, marcá “No aplica”.',
+    volt: 'Voltaje medido en la alimentación del equipo, en voltios. Ejemplo: 12.0. No copies 220 solo por haber elegido red eléctrica; registrá la medición correspondiente.',
+    latGms: 'Coordenada norte/sur del lugar de esta cámara, en grados, minutos y segundos. “Usar mi ubicación” la completa con la posición de tu dispositivo.',
+    lonGms: 'Coordenada este/oeste del mismo punto. Verificá que estés junto a la cámara antes de usar la ubicación del dispositivo.',
+    t_vivo: 'Marcá si pudiste abrir la imagen en vivo y comprobar que se ve correctamente.',
+    t_noti: 'Marcá si comprobaste que las notificaciones llegan a la aplicación del cliente.',
+    t_sd: 'Marcá si comprobaste que la tarjeta microSD graba y permite ver una grabación.',
+    t_evt: 'Marcá si hiciste una prueba de movimiento y el equipo registró el evento.',
+    t_panel: 'Marcá si verificaste que el panel solar está entregando carga al sistema.',
+    Poste: 'Foto del poste o estructura donde está montada esta cámara.',
+    Vivo: 'Foto o captura de la imagen en vivo de esta cámara en la aplicación.',
+    Carga: 'Foto de la lectura o indicador de carga del sistema solar.',
+    Fij: 'Foto desde atrás donde se distingan las fijaciones de la cámara al poste.',
+    Senal: 'Foto o captura donde se lea el nivel de señal de esta conexión.',
+    CamPoste: 'Foto desde lejos que muestre la cámara, el poste completo y su entorno.',
+  };
+  function explainFields() {
+    document.querySelectorAll('input, select, textarea').forEach(control => {
+      const original = control.id || control.name;
+      if (!original) return;
+      const suffix = original.startsWith('cam_') ? original.split('_').slice(2).join('_') : original;
+      if (suffix.endsWith('_na')) {
+        const field = control.closest('.field');
+        control.setAttribute('aria-label', `No aplica: ${field?.querySelector('label')?.textContent.trim() || 'medición'}`);
+        return;
+      }
+      const help = fieldHelp[suffix];
+      if (!help) return;
+      if (!control.id) control.id = original;
+      const hintId = `${control.id}_help`;
+      if (document.getElementById(hintId)) return;
+      const hint = document.createElement('small'); hint.id = hintId; hint.className = 'field-help'; hint.textContent = help;
+      const label = control.closest('.field')?.querySelector('label:not(.na)');
+      if (label && !label.contains(control)) label.htmlFor = control.id;
+      if (control.type === 'checkbox') control.closest('label').querySelector('span')?.appendChild(hint);
+      else if (control.type === 'file') {
+        const caption = control.closest('.photo-cell').querySelector('.ph-caption');
+        caption.replaceChildren(hint);
+      } else control.closest('.field, .code-field')?.appendChild(hint);
+      control.setAttribute('aria-describedby', hintId);
+    });
+  }
+  explainFields();
+
   function showStep(n) {
     step = Math.max(0, Math.min(3, n));
     sections.forEach((el, i) => el.hidden = i !== step);
@@ -79,7 +152,7 @@
   function invalidate() { lastReport = null; $('#storageStatus').textContent = 'Cambios pendientes. Las fotos y el PDF se guardan al finalizar.'; }
   $('#formInstalacion').addEventListener('input', invalidate);
   $('#formInstalacion').addEventListener('change', invalidate);
-  new MutationObserver(invalidate).observe($('#camList'), {childList:true});
+  new MutationObserver(() => { invalidate(); explainFields(); }).observe($('#camList'), {childList:true});
   $('#btnClearFirm').addEventListener('click', invalidate);
   $('#btnReset').addEventListener('click', () => {
     document.querySelectorAll('.photo-preview').forEach(img => { URL.revokeObjectURL(img.src); img.remove(); });
