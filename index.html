@@ -10,11 +10,21 @@
 </head>
 <body class="locked">
   <main id="loginScreen" class="login-screen">
-    <div class="login-brand"><img src="logo.png" alt="Agronomía Inteligente" /><span>AGRONOMÍA<br>INTELIGENTE</span></div>
-    <div class="login-card"><span class="eyebrow">PORTAL DE TÉCNICOS</span><h1>Todo listo.<br>Vamos al campo.</h1><p>Tu trabajo, documentado de principio a fin.</p>
-      <form id="loginForm"><label for="accessCode">Código de acceso</label><input id="accessCode" type="password" autocomplete="current-password" required placeholder="Ingresá tu código" /><button class="btn primary" type="submit">Ingresar al portal <span>→</span></button><p id="loginMsg" role="alert"></p></form>
-      <small>Un acceso simple. Toda la información en un lugar.</small>
-    </div><div class="login-foot">TECNOLOGÍA QUE ACOMPAÑA TU TRABAJO.</div>
+    <div class="login-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+    <section class="login-story" aria-label="Agronomía Inteligente">
+      <div class="login-brand"><img src="logo.png" alt="Agronomía Inteligente SRL" /></div>
+      <div class="login-story-copy"><span class="eyebrow"><span class="signal-dot"></span> TECNOLOGÍA EN EL CAMPO</span>
+      <h1>El campo no para.<br><span>Vos tampoco.</span></h1>
+      <p>Instalá. Registrá. Seguí adelante.<br>Todo tu trabajo, en un solo lugar.</p></div>
+      <div class="login-features"><span><b>01</b> Registrá la visita</span><span><b>02</b> Sumá evidencia</span><span><b>03</b> Entregá tu parte</span></div>
+      <div class="login-foot">AGRONOMÍA INTELIGENTE SRL <span>·</span> PORTAL DE CAMPO</div>
+    </section>
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg></div>
+      <span class="eyebrow">ACCESO PARA TÉCNICOS</span><h2 id="loginTitle">Tu próxima visita<br>empieza acá.</h2><p>Ingresá tu código y ponete en marcha.</p>
+      <form id="loginForm"><label for="accessCode">Código de acceso</label><div class="code-field"><input id="accessCode" type="password" autocomplete="current-password" required placeholder="Ingresá tu código" /><button id="toggleCode" type="button" aria-label="Mostrar código" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="btn primary login-submit" type="submit"><span>Ingresar al portal</span><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button><p id="loginMsg" role="alert"></p></form>
+      <div class="login-note"><span aria-hidden="true">◈</span><span>Acceso seguro para tu equipo técnico.<br>Sin usuarios. Sin vueltas.</span></div>
+    </section>
   </main>
   <div class="app" inert>
     <header class="topbar">
@@ -37,7 +47,7 @@
     </header>
 
     <main class="content">
-      <div class="work-heading"><div><span class="eyebrow">ESPACIO DE TRABAJO</span><h2>Un buen trabajo.<br>Un registro impecable.</h2><p>Completá el parte, sumá las fotos y cerrá la visita.</p></div><div class="draft-badge">Borrador local · sin fotos</div></div>
+      <div class="work-heading"><div><span class="eyebrow">TU OFICINA, EN EL CAMPO</span><h2>Cada visita.<br><span>Bien documentada.</span></h2><p>Completá el parte, sumá las fotos y cerrá la visita.</p></div><div class="draft-badge">Borrador local · sin fotos</div></div>
       <nav class="steps" aria-label="Pasos del parte"><button type="button" data-step="0"><b>01</b> Servicio</button><button type="button" data-step="1"><b>02</b> Cámaras</button><button type="button" data-step="2"><b>03</b> Revisión</button><button type="button" data-step="3"><b>04</b> Finalizar</button></nav>
       <form id="formInstalacion" class="panel" onsubmit="return false">
         <!-- Datos del servicio -->
