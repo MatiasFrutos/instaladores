@@ -46,7 +46,7 @@
     doc.text(clean('Agronomía Inteligente SRL — Parte de instalación'), M, y);
     y += 22;
 
-    doc.setDrawColor(36, 91, 64);
+    doc.setDrawColor(230, 193, 0);
     doc.setLineWidth(2);
     doc.line(M, y, pageW - M, y);
     y += 16;
@@ -65,7 +65,7 @@
       body: A,
       theme: 'grid',
       styles: { fontSize: 9.5, cellPadding: 5 },
-      headStyles: { fillColor: [36, 91, 64] },
+      headStyles: { fillColor: [16, 16, 16] },
       margin: { left: M, right: M },
     });
     y = doc.lastAutoTable.finalY + 12;
@@ -98,7 +98,7 @@
         body: A0.map(([k, v]) => [clean(k), clean(String(v))]),
         theme: 'grid',
         styles: { fontSize: 9.5, cellPadding: 4 },
-        headStyles: { fillColor: [36, 91, 64] },
+        headStyles: { fillColor: [16, 16, 16] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 8;
@@ -145,7 +145,7 @@
         body: tests,
         theme: 'grid',
         styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [36, 91, 64] },
+        headStyles: { fillColor: [16, 16, 16] },
         margin: { left: M, right: M },
       });
       y0 = doc.lastAutoTable.finalY + 10;
@@ -181,7 +181,7 @@
             doc.setDrawColor(0, 0, 0);
             doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
             doc.setLineWidth(0.6);
-            doc.setDrawColor(36, 91, 64);
+            doc.setDrawColor(230, 193, 0);
             doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
             doc.addPage();
@@ -216,7 +216,7 @@
       doc.setDrawColor(0, 0, 0);
       doc.roundedRect(blockX, blockY, blockW, blockH, 4, 4, 'S');
       doc.setLineWidth(0.6);
-      doc.setDrawColor(36, 91, 64);
+      doc.setDrawColor(230, 193, 0);
       doc.roundedRect(blockX + 2, blockY + 2, blockW - 4, blockH - 4, 3, 3, 'S');
 
       y = blockY + blockH + 12;

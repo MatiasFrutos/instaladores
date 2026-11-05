@@ -15,6 +15,10 @@
     $('#prevStep').hidden = step === 0;
     $('#nextStep').hidden = step === 3;
     $('#stepCount').textContent = `Paso ${step + 1} de 4`;
+    const activeSection = sections[step];
+    activeSection.classList.remove('section-enter');
+    void activeSection.offsetWidth;
+    activeSection.classList.add('section-enter');
     if (step === 3) window.dispatchEvent(new Event('resize'));
   }
   document.querySelectorAll('[data-step]').forEach(el => el.onclick = () => showStep(Number(el.dataset.step)));
@@ -36,13 +40,20 @@
     if (!res.ok) throw new Error(result.error || 'No se pudo completar la operación.');
     return result;
   }
+  $('#toggleCode').onclick = () => {
+    const visible = $('#accessCode').type === 'password';
+    $('#accessCode').type = visible ? 'text' : 'password';
+    $('#toggleCode').setAttribute('aria-label', visible ? 'Ocultar código' : 'Mostrar código');
+    $('#toggleCode').setAttribute('aria-pressed', String(visible));
+  };
   $('#loginForm').onsubmit = async e => {
     e.preventDefault();
-    const button = e.target.querySelector('button'); button.disabled = true;
+    const button = e.target.querySelector('[type=submit]'); button.disabled = true;
+    button.classList.add('loading');
     $('#loginMsg').textContent = '';
     try { await api('/api/login', {code:$('#accessCode').value}); $('#accessCode').value = ''; lock(false); }
     catch (err) { $('#loginMsg').textContent = err.message; }
-    finally { button.disabled = false; }
+    finally { button.disabled = false; button.classList.remove('loading'); }
   };
   $('#logout').onclick = async () => {
     try { await api('/api/logout', {}); lock(true); } catch (err) { window.msg('err', err.message); }
